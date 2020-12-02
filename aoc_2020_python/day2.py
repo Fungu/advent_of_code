@@ -9,10 +9,9 @@ def main():
 
     for line in lines:
         low, high, letter, password = scanf.scanf("%d-%d %c: %s", line)
-        count = password.count(letter)
-        if count >= int(low) and count <= int(high):
+        if low <= password.count(letter) <= high:
             part1 += 1
-        if (password[int(low) - 1] == letter) != (password[int(high) - 1] == letter):
+        if (password[low - 1] == letter) != (password[high - 1] == letter):
             part2 += 1
     
     print("Part 1: ", part1)
