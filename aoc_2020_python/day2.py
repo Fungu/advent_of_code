@@ -11,7 +11,7 @@ def main():
         low, high, letter, password = scanf.scanf("%d-%d %c: %s", line)
         if low <= password.count(letter) <= high:
             part1 += 1
-        if (password[low - 1] == letter) != (password[high - 1] == letter):
+        if (password[low - 1] == letter) ^ (password[high - 1] == letter):
             part2 += 1
     
     print("Part 1: ", part1)
