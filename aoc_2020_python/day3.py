@@ -22,8 +22,8 @@ def main():
             posX %= len(grid[0])
             posY += slopes[index][1]
     
-    print("Part 1: ", collisions[1])
-    print("Part 2: ", math.prod(collisions))
+    print("Part 1:", collisions[1])
+    print("Part 2:", math.prod(collisions))
 
 start = time.time()
 main()

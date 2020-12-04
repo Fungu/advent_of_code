@@ -14,8 +14,8 @@ def main():
         if (password[low - 1] == letter) ^ (password[high - 1] == letter):
             part2 += 1
     
-    print("Part 1: ", part1)
-    print("Part 2: ", part2)
+    print("Part 1:", part1)
+    print("Part 2:", part2)
 
 start = time.time()
 main()
