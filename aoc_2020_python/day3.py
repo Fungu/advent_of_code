@@ -1,5 +1,4 @@
 import time
-import scanf
 import math
 
 def main():
@@ -29,5 +28,3 @@ def main():
 start = time.time()
 main()
 print("Execution time:", time.time() - start, "ms")
-
-
