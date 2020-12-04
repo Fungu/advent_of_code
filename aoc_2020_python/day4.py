@@ -11,8 +11,8 @@ def main():
     passportList = list(filter(isValid, passportList))
     part2 = len(passportList)
 
-    print("Part 1: ", part1)
-    print("Part 2: ", part2)
+    print("Part 1:", part1)
+    print("Part 2:", part2)
 
 def hasRequiredFields(passport):
     return all((field in passport) for field in ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"])
@@ -26,7 +26,7 @@ def isValid(passport):
         return False
     #eyr (Expiration Year) - four digits; at least 2020 and at most 2030.
     if not (2020 <= int(passport["eyr"]) <= 2030):
-            return False
+        return False
     #hgt (Height) - a number followed by either cm or in:
     if "cm" in passport["hgt"]:
         #If cm, the number must be at least 150 and at most 193.
