@@ -1,40 +1,24 @@
-import time
+import aoc
 
-def main(rawInput):
-    bagDict = {}
-    parsedInput = [row.split(" contain ") for row in rawInput]
-    for rowPair in parsedInput:
-        bagDict[rowPair[0].replace("bags", "bag")] = rowPair[1].replace(".", "").replace("bags", "bag").strip().split(", ")
-    part1Set = set()
-    openSet = set()
-    openSet.add("shiny gold bag")
-    while len(openSet) > 0:
-        bag = openSet.pop()
-        part1Set.add(bag)
-        for key, value in bagDict.items():
-            for potentialBags in value:
-                if bag in potentialBags:
-                    openSet.add(key)
+def main(inputLines):
+    bagDict = {outer[0] : [[int(inner.split(" ")[0]), inner[inner.index(" ")+1:]] for inner in outer[1].split(", ")] for outer in [line.replace(".", "").replace("bags", "bag").replace("no ", "0 no ").strip().split(" contain ") for line in inputLines]}
 
-    part1 = len(part1Set) - 1
-    part2 = sumBags(bagDict, "shiny gold bag") - 1
+    part1 = len(bagParents(bagDict, "shiny gold bag")) - 1
+    part2 = bagContents(bagDict, "shiny gold bag") - 1
+
     return part1, part2
 
-def sumBags(bagDict, bag):
-    if "no other bag" in bagDict[bag]:
-        return 1
-    ret = 1
-    for contents in bagDict[bag]:
-        for otherBag in contents.split(","):
-            amount = int(otherBag.split(" ")[0])
-            name = otherBag[otherBag.index(" "):].strip()
-            ret += amount * sumBags(bagDict, name)
+def bagParents(bagDict, bag):
+    ret = {bag}
+    for key, value in bagDict.items():
+        for potentialBags in value:
+            if bag in potentialBags[1]:
+                ret.update(bagParents(bagDict, key))
     return ret
 
-with open("input/day7.txt") as file:
-    rawInput = file.readlines()
-start = time.time()
-part1, part2 = main(rawInput)
-print("Execution time:", time.time() - start, "ms")
-print("Part 1:", part1)
-print("Part 2:", part2)
+def bagContents(bagDict, bag):
+    if "no other bag" in bag:
+        return 0
+    return sum(contents[0] * bagContents(bagDict, contents[1]) for contents in bagDict[bag]) + 1
+
+aoc.runLines(main, "day7")
