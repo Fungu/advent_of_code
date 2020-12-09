@@ -13,6 +13,8 @@ def runBlob(mainFunction, day):
 def run(mainFunction, rawInput):
     start = time.time()
     part1, part2 = mainFunction(rawInput)
-    print("Execution time:", time.time() - start, "s")
+    executionTime = time.time() - start
+    executionTime = int((executionTime - int(executionTime)) * 1000)
+    print("Execution time:", executionTime, "ms")
     print("Part 1:", part1)
     print("Part 2:", part2)
