@@ -1,17 +1,20 @@
 import aoc
 
 def main(inputLines):
-    values = [int(val) for val in inputLines]
+    values = sorted([int(val) for val in inputLines])
     
-    part1 = [a for a in values if [b for b in values if a + b == 2020]]
-    part1 = part1[0] * part1[1]
+    combined = {}
+    for a in range(len(values)):
+        for b in range(a + 1, len(values)):
+            combined[values[a] + values[b]] = values[a] * values[b]
+
+    part1 = combined[2020]
 
     for a in values:
-        for b in values:
-            for c in values:
-                if a + b + c == 2020:
-                    part2 = a * b * c
-    
+        if 2020 - a in combined:
+            part2 = a * combined[2020 - a]
+            break
+
     return part1, part2
 
 aoc.runLines(main, "day01.txt")
