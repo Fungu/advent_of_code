@@ -32,4 +32,4 @@ def main(inputLines):
 
     return part1, part2
 
-aoc.runLines(main, "day9")
+aoc.runLines(main, "day09.txt")

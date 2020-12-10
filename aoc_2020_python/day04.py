@@ -1,9 +1,8 @@
-import time
+import aoc
 import re
 
-def main():
-    with open("input/day4.txt") as file:
-        passportList = [{pair.split(":")[0] : pair.split(":")[1] for pair in passport.replace("\n", " ").split(" ")} for passport in file.read().split("\n\n")]
+def main(rawInput):
+    passportList = [{pair.split(":")[0] : pair.split(":")[1] for pair in passport.replace("\n", " ").split(" ")} for passport in rawInput.split("\n\n")]
     
     passportList = list(filter(hasRequiredFields, passportList))
     part1 = len(passportList)
@@ -11,8 +10,7 @@ def main():
     passportList = list(filter(isValid, passportList))
     part2 = len(passportList)
 
-    print("Part 1:", part1)
-    print("Part 2:", part2)
+    return part1, part2
 
 def hasRequiredFields(passport):
     return all((field in passport) for field in ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"])
@@ -50,6 +48,4 @@ def isValid(passport):
     #cid (Country ID) - ignored, missing or not.
     return True
 
-start = time.time()
-main()
-print("Execution time:", time.time() - start, "ms")
+aoc.runRaw(main, "day04.txt")

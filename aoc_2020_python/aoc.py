@@ -5,7 +5,7 @@ def runLines(mainFunction, day):
         rawInput = file.readlines()
     run(mainFunction, rawInput)
 
-def runBlob(mainFunction, day):
+def runRaw(mainFunction, day):
     with open("input/" + day) as file:
         rawInput = file.read()
     run(mainFunction, rawInput)

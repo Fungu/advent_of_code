@@ -21,4 +21,4 @@ def bagContents(bagDict, bag):
         return 0
     return sum(contents[0] * bagContents(bagDict, contents[1]) for contents in bagDict[bag]) + 1
 
-aoc.runLines(main, "day7")
+aoc.runLines(main, "day07.txt")

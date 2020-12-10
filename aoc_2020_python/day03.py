@@ -1,9 +1,8 @@
-import time
+import aoc
 import math
 
-def main():
-    with open("input/day3.txt") as file:
-        grid = [[char.strip() == "#" for char in line.strip()] for line in file.readlines()]
+def main(inputLines):
+    grid = [[char.strip() == "#" for char in line.strip()] for line in inputLines]
 
     slopes = [[1, 1],
             [3, 1],
@@ -22,9 +21,6 @@ def main():
             posX %= len(grid[0])
             posY += slopes[index][1]
     
-    print("Part 1:", collisions[1])
-    print("Part 2:", math.prod(collisions))
+    return collisions[1], math.prod(collisions)
 
-start = time.time()
-main()
-print("Execution time:", time.time() - start, "ms")
+aoc.runLines(main, "day03.txt")

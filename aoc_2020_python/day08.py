@@ -39,4 +39,4 @@ def runProgram(program, instructionToFlip):
     
     return acc, programPointer >= len(program)
 
-aoc.runLines(main, "day8")
+aoc.runLines(main, "day08.txt")
