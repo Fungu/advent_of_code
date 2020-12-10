@@ -1,15 +1,13 @@
-import time
+import aoc
 import functools
 
-def main():
-    with open("input/day5.txt") as file:
-        boardingpassList = [getBoardingpass(line) for line in file.readlines()]
+def main(inputLines):
+    boardingpassList = [getBoardingpass(line) for line in inputLines]
     
     part1 = functools.reduce(lambda a, b: a if a[2] > b[2] else b, boardingpassList)[2]
     part2 = findEmptySeat(boardingpassList)
     
-    print("Part 1:", part1)
-    print("Part 2:", part2)
+    return part1, part2
 
 def getBoardingpass(line):
     row = int(line[:7].replace("F", "0").replace("B", "1"), 2)
@@ -30,6 +28,4 @@ def findEmptySeat(boardingpassList):
 def getSeatId(row, column):
     return row * 8 + column
 
-start = time.time()
-main()
-print("Execution time:", time.time() - start, "ms")
+aoc.runLines(main, "day05.txt")
