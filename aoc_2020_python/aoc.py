@@ -18,3 +18,11 @@ def run(mainFunction, rawInput):
     print("Execution time:", executionTime, "ms")
     print("Part 1:", part1)
     print("Part 2:", part2)
+
+lastTime = time.time()
+def timeDiff(description):
+    global lastTime
+    t = time.time() - lastTime
+    t = round(t * 1000)
+    print(description, t)
+    lastTime = time.time()
