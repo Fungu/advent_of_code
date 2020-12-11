@@ -1,6 +1,7 @@
 import aoc
 
 def main(inputLines):
+    # This solution is made for entertainment purposes. I would not use this programming style in a serious application.
     bagDict = {outer[0] : [[int(inner.split(" ")[0]), inner[inner.index(" ")+1:]] for inner in outer[1].split(", ")] for outer in [line.replace(".", "").replace("bags", "bag").replace("no ", "0 no ").strip().split(" contain ") for line in inputLines]}
 
     part1 = len(bagParents(bagDict, "shiny gold bag")) - 1
