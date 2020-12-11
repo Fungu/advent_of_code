@@ -1,63 +1,56 @@
 import aoc
 
 def main(inputLines):
-    state = {}
     everyDirection = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
-    closest = {}
-    for line in range(len(inputLines)):
-        for row in range(len(inputLines[line].strip())):
-            if inputLines[line][row] != ".":
-                closest[(line, row)] = []
-                state[(line, row)] = False
-                for direction in everyDirection:
-                    linePos = line + direction[0]
-                    rowPos = row + direction[1]
-                    if linePos >= 0 and linePos < len(inputLines) and rowPos >= 0 and rowPos < len(inputLines[line].strip()) and inputLines[linePos][rowPos] == "L":
-                        closest[(line, row)].append((linePos, rowPos))
-
-    resultChanged = True
-    while resultChanged:
-        state, resultChanged = simulate(state, closest, 4)
-    part1 = 0
-    for key in state:
-        if state[key]:
-            part1 += 1
-
+    height = len(inputLines)
+    width = len(inputLines[0].strip())
 
     state = {}
-    seen = {}
-    for line in range(len(inputLines)):
-        for row in range(len(inputLines[line].strip())):
-            if inputLines[line][row] != ".":
-                seen[(line, row)] = []
-                state[(line, row)] = False
-                for direction in everyDirection:
-                    linePos = line + direction[0]
-                    rowPos = row + direction[1]
-                    while linePos >= 0 and linePos < len(inputLines) and rowPos >= 0 and rowPos < len(inputLines[line].strip()):
-                        if inputLines[linePos][rowPos] != ".":
-                            seen[(line, row)].append((linePos, rowPos))
+    adjacentSeats = {}
+    seenSeats = {}
+    for row in range(height):
+        for col in range(width):
+            if inputLines[row][col] != ".":
+                adjacentSeats[(row, col)] = []
+                seenSeats[(row, col)] = []
+                state[(row, col)] = inputLines[row][col] == "#"
+                for dRow, dCol in everyDirection:
+                    rowPos = row + dRow
+                    colPos = col + dCol
+                    directNeighbor = True
+                    while 0 <= rowPos < height and 0 <= colPos < width:
+                        if inputLines[rowPos][colPos] != ".":
+                            if directNeighbor:
+                                adjacentSeats[(row, col)].append((rowPos, colPos))
+                            seenSeats[(row, col)].append((rowPos, colPos))
                             break
-                        linePos += direction[0]
-                        rowPos += direction[1]
+                        directNeighbor = False
+                        rowPos += dRow
+                        colPos += dCol
 
-    resultChanged = True
-    while resultChanged:
-        state, resultChanged = simulate(state, seen, 5)
-    part2 = 0
-    for key in state:
-        if state[key]:
-            part2 += 1
-
+    part1 = simulateUntilStable(state, adjacentSeats, maxNeighbors=4)
+    part2 = simulateUntilStable(state, seenSeats, maxNeighbors=5)
+    
     return part1, part2
 
-def simulate(state, seats, maxNeighbors):
+def simulateUntilStable(state, adjacentSeats, maxNeighbors):
+    stateCopy = state.copy()
+    resultChanged = True
+    while resultChanged:
+        stateCopy, resultChanged = simulate(stateCopy, adjacentSeats, maxNeighbors)
+    ret = 0
+    for seat in stateCopy:
+        if stateCopy[seat]:
+            ret += 1
+    return ret
+
+def simulate(state, adjacentSeats, maxNeighbors):
     result = {}
     resultChanged = False
 
     for key in state.keys():
         neighbors = 0
-        for seat in seats[key]:
+        for seat in adjacentSeats[key]:
             if state[seat]:
                 neighbors += 1
         if state[key] and neighbors >= maxNeighbors:
