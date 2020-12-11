@@ -9,29 +9,23 @@ def main(inputLines):
     differences = [0, 0, 0]
     for i in range(len(adapters) - 1):
         differences[adapters[i + 1] - adapters[i] - 1] += 1
-    assert(differences[1] == 0)
     part1 = differences[0] * differences[2]
     
-    onesInARow = 0
-    part2 = 1
-    for i in range(len(adapters) - 1):
-        difference = adapters[i + 1] - adapters[i]
-        if difference == 1:
-            onesInARow += 1
-        else:
-            if onesInARow <= 1:
-                mult = 1
-            elif onesInARow == 2:
-                mult = 2
-            elif onesInARow == 3:
-                mult = 4
-            elif onesInARow == 4:
-                mult = 7
-            else:
-                assert(False)
-            part2 *= mult
-            onesInARow = 0
+    part2 = getCombinationsFrom(0, adapters, {})
 
     return part1, part2
+
+# Dynamic programming
+def getCombinationsFrom(index, adapters, memory):
+    if index + 1 == len(adapters):
+        return 1
+    if index in memory:
+        return memory[index]
+    ret = 0
+    for i in range(index + 1, index + 4):
+        if i < len(adapters) and adapters[i] - adapters[index] <= 3:
+            ret += getCombinationsFrom(i, adapters, memory)
+    memory[index] = ret
+    return ret
 
 aoc.runLines(main, "day10.txt")
