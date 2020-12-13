@@ -3,13 +3,12 @@ import math
 
 def main(inputLines):
     earliestDeparture = int(inputLines[0])
-    busList = [[i, int(bus)] for i, bus in enumerate(inputLines[1].replace("x", "-1").split(","))]
-    busList = list(filter(lambda b: b[1] != -1, busList))
+    busList = [[i, int(bus)] for i, bus in enumerate(inputLines[1].split(",")) if bus != "x"]
 
-    bestTime = -1
+    bestTime = None
     for _, bus in busList:
         nextTime = math.ceil(earliestDeparture / bus) * bus
-        if bestTime == -1 or nextTime < bestTime:
+        if bestTime == None or nextTime < bestTime:
             bestTime = nextTime
             bestBus = bus
     part1 = int(bestBus) * (bestTime - earliestDeparture)
