@@ -8,7 +8,7 @@ def main(rawInput):
 
     return part1, part2
 
-# TODO: This solution takes 10 seconds to run. Figure out a quicker way to do this.
+# Van Eck's sequence
 def memoryGame(inputList, iterations):
     spokenNumbers = {}
     for i in range(len(inputList)):
