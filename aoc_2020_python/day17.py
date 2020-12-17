@@ -6,8 +6,8 @@ def main(inputLines):
     neighbors3d, neighbors4d = getNeighborTypes()
     state = getState(inputLines, neighbors4d)
     
-    part1 = runSimulation(state.copy(), neighbors3d, 6)
-    part2 = runSimulation(state.copy(), neighbors4d, 6)
+    part1 = runSimulation(state, neighbors3d, 6)
+    part2 = runSimulation(state, neighbors4d, 6)
 
     return part1, part2
 
@@ -17,16 +17,16 @@ def runSimulation(state, neighborsType, cycles):
         for pos in state:
             neighbors = countNeighbors(state, pos, neighborsType)
             # If a cube is active and exactly 2 or 3 of its neighbors are also active, the cube remains active. Otherwise, the cube becomes inactive.
-            if state[pos] and 2 <= neighbors <= 3:
+            if state[pos] and neighbors in [2, 3]:
                 nextState[pos] = True
                 initNeighbors(nextState, pos, neighborsType)
             # If a cube is inactive but exactly 3 of its neighbors are active, the cube becomes active. Otherwise, the cube remains inactive.
             elif not state[pos] and neighbors == 3:
                 nextState[pos] = True
                 initNeighbors(nextState, pos, neighborsType)
-        state = nextState.copy()
+        state = nextState
     
-    ret, _ = countState(state)
+    ret = countState(state)
     return ret
 
 def getNeighborTypes():
@@ -64,6 +64,6 @@ def countState(state):
     for value in state.values():
         if value:
             ret += 1
-    return ret, len(state) - ret
+    return ret
 
 aoc.runLines(main, "day17.txt")
