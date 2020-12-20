@@ -1,5 +1,6 @@
 import aoc
 import re
+import colorama
 
 def main(inputBlob):
     tileDict = {}
@@ -16,14 +17,17 @@ def main(inputBlob):
     part1 = int(tilePositions[(minX, minY)]) * int(tilePositions[(maxX, minY)]) * int(tilePositions[(minX, maxY)]) * int(tilePositions[(maxX, maxY)])
 
     for _ in range(4):
-        assembledGrid = rotate(assembledGrid, 1)
-        found, roughness = findSeaMonsters(assembledGrid)
-        if found:
-            part2 = roughness
-        assembledGrid = flip(assembledGrid, True)
-        found, roughness = findSeaMonsters(assembledGrid)
-        if found:
-            part2 = roughness
+        for flipping in [False, True]:
+            found, roughness = findSeaMonsters(assembledGrid)
+            if found:
+                part2 = roughness
+                break
+            if flipping:
+                assembledGrid = flip(assembledGrid, True)
+            else:
+                assembledGrid = rotate(assembledGrid, 1)
+    
+    #printGrid(assembledGrid)
 
     return part1, part2
 
@@ -102,16 +106,16 @@ def assemble(tileDict):
     minY = min([y for x, y in tilePositions.keys()])
     maxY = max([y for x, y in tilePositions.keys()])
 
-    assempledGrid = []
+    assembledGrid = []
     for y in range(minY, maxY + 1):
         for innerY in range(1, len(tileDict[startTileId]) - 1):
             line = ""
             for x in range(minX, maxX + 1):
                 otherTile = tileDict[tilePositions[(x, y)]]
                 line += otherTile[innerY][1:-1]
-            assempledGrid.append(line)
-    assempledGrid = flip(assempledGrid, False)
-    return assempledGrid, tilePositions
+            assembledGrid.append(line)
+    assembledGrid = flip(assembledGrid, False)
+    return assembledGrid, tilePositions
 
 def findSeaMonsters(grid):
     seaMonster = [
@@ -136,9 +140,27 @@ def findSeaMonsters(grid):
         for matchIndex in matches[0]:
             if matchIndex in matches[1] and matchIndex in matches[2]:
                 seaMonsterCount += 1
-    hashCount = sum([row.count("#") for row in grid])
-    seaMonsterSize = sum([row.count("#") for row in seaMonster])
+                for monsterIndex, monsterRow in enumerate(seaMonster):
+                    for monsterCharIndex, monsterChar in enumerate(monsterRow):
+                        if monsterChar == "#":
+                            grid[row + monsterIndex] = grid[row + monsterIndex][: matchIndex + monsterCharIndex] + "O" + grid[row + monsterIndex][matchIndex + monsterCharIndex + 1 :]
+    roughness = sum([row.count("#") for row in grid])
 
-    return seaMonsterCount != 0, hashCount - seaMonsterSize * seaMonsterCount
+    return seaMonsterCount != 0, roughness
+
+def printGrid(grid):
+    colorama.init()
+    for row in grid:
+        for char in row:
+            if char == "#":
+                print(colorama.Fore.BLUE, end='')
+            elif char == ".":
+                print(colorama.Fore.CYAN, end='')
+            elif char == "O":
+                print(colorama.Fore.YELLOW, end='')
+            else:
+                assert False
+            print(char + colorama.Style.RESET_ALL, end='')
+        print()
 
 aoc.runRaw(main, "day20.txt")
