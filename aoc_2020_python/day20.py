@@ -7,7 +7,7 @@ def main(inputBlob):
         lines = rawTile.splitlines()
         tileDict[lines[0].split()[1].replace(":", "")] = lines[1:]
 
-    assempledGrid, tilePositions = assemple(tileDict)
+    assembledGrid, tilePositions = assemble(tileDict)
     
     minX = min([x for x, y in tilePositions.keys()])
     maxX = max([x for x, y in tilePositions.keys()])
@@ -16,12 +16,12 @@ def main(inputBlob):
     part1 = int(tilePositions[(minX, minY)]) * int(tilePositions[(maxX, minY)]) * int(tilePositions[(minX, maxY)]) * int(tilePositions[(maxX, maxY)])
 
     for _ in range(4):
-        assempledGrid = rotate(assempledGrid, 1)
-        found, roughness = findSeaMonsters(assempledGrid)
+        assembledGrid = rotate(assembledGrid, 1)
+        found, roughness = findSeaMonsters(assembledGrid)
         if found:
             part2 = roughness
-        assempledGrid = flip(assempledGrid, True)
-        found, roughness = findSeaMonsters(assempledGrid)
+        assembledGrid = flip(assembledGrid, True)
+        found, roughness = findSeaMonsters(assembledGrid)
         if found:
             part2 = roughness
 
@@ -57,7 +57,7 @@ def flip(tile, horizontal):
         newTile = tile[::-1]
     return newTile
 
-def assemple(tileDict):
+def assemble(tileDict):
     startTileId = list(tileDict.keys())[0]
     directionDict = {0: (0, -1), 1: (-1, 0), 2: (0, 1), 3: (1, 0)}
 
@@ -80,9 +80,9 @@ def assemple(tileDict):
                     needsFlip = False
                     if edgeA == edgeB:
                         match = True
+                        needsFlip = True
                     if edgeA == edgeB[::-1]:
                         match = True
-                        needsFlip = True
                     if match:
                         dX, dY = directionDict[direction]
                         position = (currentPosition[0] + dX, currentPosition[1] + dY)
@@ -91,7 +91,7 @@ def assemple(tileDict):
                             if relativeRotation < 0:
                                 relativeRotation += 4
                             otherTile = rotate(otherTile, relativeRotation)
-                            if not needsFlip:
+                            if needsFlip:
                                 otherTile = flip(otherTile, direction in [0, 2])
                             tileDict[otherId] = otherTile
                             tilePositions[position] = otherId
