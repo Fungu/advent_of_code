@@ -130,15 +130,15 @@ def findSeaMonsters(grid):
     seaMonsterMatch.append(re.compile("(?=(" + seaMonster[2].replace(" ", ".") + "))"))
 
     seaMonsterCount = 0
-    for row in range(len(grid) - len(seaMonsterMatch)):
+    for row in range(len(grid) - len(seaMonsterMatch) + 1):
         matches = []
         for patternIndex in range(len(seaMonsterMatch)):
             innerMatches = []
             for m in seaMonsterMatch[patternIndex].findall(grid[row + patternIndex]):
                 innerMatches.append(grid[row + patternIndex].index(m))
             matches.append(innerMatches)
-        for matchIndex in matches[0]:
-            if matchIndex in matches[1] and matchIndex in matches[2]:
+        for matchIndex in matches[1]:
+            if matchIndex in matches[0] and matchIndex in matches[2]:
                 seaMonsterCount += 1
                 for monsterIndex, monsterRow in enumerate(seaMonster):
                     for monsterCharIndex, monsterChar in enumerate(monsterRow):
