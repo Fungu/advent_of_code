@@ -19,7 +19,6 @@ def calculateScore(decks):
             mult -= 1
     return ret
 
-# TODO: This is too slow
 def play(decks, part2 = False):
     previousRounds = set()
     while decks[0] and decks[1]:
@@ -53,5 +52,4 @@ def play(decks, part2 = False):
     winner = 0 if len(decks[0]) > 0 else 1
     return winner, calculateScore(decks)
 
-#aoc.runLines(main, "day22.txt")
 aoc.runRaw(main, "day22.txt")
