@@ -40,7 +40,10 @@ def play(decks, part2 = False):
             newDecks = []
             newDecks.append(decks[0][:draw[0]])
             newDecks.append(decks[1][:draw[1]])
-            subWinner, _ = play(newDecks, part2)
+            if max(max(newDecks[0]), max(newDecks[1])) in newDecks[0]:
+                subWinner = 0
+            else:
+                subWinner, _ = play(newDecks, part2)
         
         # Otherwise, at least one player must not have enough cards left in their deck to recurse; the winner of the round is the player with the higher-value card.
         else:
