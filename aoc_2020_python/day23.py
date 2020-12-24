@@ -59,8 +59,8 @@ def play(inputBlob, extraCups, iterations):
         for _ in range(3):
             pickup.append(c)
             c = c.next
-        for c in pickup:
-            cups.remove(c)
+        pickup[0].prev.next = pickup[2].next
+        pickup[2].next.prev = pickup[0].prev
         
         destination = currentCup.data - 1
         if destination < 1:
@@ -78,9 +78,11 @@ def play(inputBlob, extraCups, iterations):
                 break
         
         destinationCup = cupDict[destination]
-        cups.insert_after(destinationCup, pickup[0])
-        cups.insert_after(pickup[0], pickup[1])
-        cups.insert_after(pickup[1], pickup[2])
+        destinationCup.next.prev = pickup[2]
+        pickup[2].next = destinationCup.next
+        destinationCup.next = pickup[0]
+        pickup[0].prev = destinationCup
+
         currentCup = currentCup.next
     
     part1 = ""
