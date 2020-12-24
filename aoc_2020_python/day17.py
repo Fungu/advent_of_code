@@ -29,7 +29,6 @@ def initState(inputLines, neighborsType):
     for row, line in enumerate(inputLines):
         for col, char in enumerate(line):
             state[(row, col, 0, 0)] = char == "#"
-            gameoflife.initNeighbors(state, (row, col, 0, 0), neighborsType)
     return state
 
 aoc.runLines(main, "day17.txt")
