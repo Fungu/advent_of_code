@@ -33,7 +33,6 @@ def initState(inputLines):
         for dirString in prog.findall(line):
             position = tuple(map(operator.add, position, directions[dirString]))
         state[position] = not (position in state and state[position])
-        gameoflife.initNeighbors(state, position, directions.values())
     return state
 
 aoc.runLines(main, "day24.txt")

@@ -1,7 +1,7 @@
 import operator
 
 def runSimulation(state, cycles, directions, remainActiveWhen, becomeActiveWhen):
-    """Use initNeighbors on all active cells before calling this function. 
+    """ 
         Parameters:
         state (dictionary) - Contains all active cells and their neighbors. 
                              The key is a position and value is True or False
@@ -11,6 +11,8 @@ def runSimulation(state, cycles, directions, remainActiveWhen, becomeActiveWhen)
         becomeActiveWhen (function) - Function that returns true if an inactive cell should become active
     .
     """
+    for pos in list(state.keys()):
+        initNeighbors(state, pos, directions)
     for _ in range(cycles):
         nextState = {}
         for pos in state:
