@@ -6,13 +6,11 @@ def main(inputLines):
 
     doorKeyCandidate = 1
     encryptionKey = 1
-    while True:
+    while doorKeyCandidate != doorPublicKey:
         encryptionKey *= cardPublicKey
         encryptionKey = encryptionKey % 20201227
         doorKeyCandidate *= 7
         doorKeyCandidate = doorKeyCandidate % 20201227
-        if doorKeyCandidate == doorPublicKey:
-            break
 
     return encryptionKey, "Pay 49 stars"
 
