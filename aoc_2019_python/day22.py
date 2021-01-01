@@ -1,143 +1,71 @@
-import time
+import aoc
 
-def test():
-    size = 11
-    value = 4
+def main(inputLines):
+    # Part 1
+    # What is the position of card 2019?
+    size = 10007
+    a, b = parseTechniques(inputLines, size)
+    part1 = applyShuffle(a, b, 2019, size)
 
-    deck = list(range(size))
-    print(deck)
+    # Part 2
+    # What number is on the card that ends up in position 2020?
+    size = 119315717514047
+    iterations = 101741582076661
+    a, b = parseTechniques(inputLines, size)
+    a, b = exponentiationBySquaring(a, b, iterations, size)
+    part2 = applyShuffleInverted(a, b, 2020, size)
 
+    return part1, part2
 
-
-    print()
-    print("deal")
-    deck = list(range(size))
-    deck = deal(deck, value)
-    print(deck)
-
-    offset = 0
-    increment = 1
-    increment += int(size / value)
-    for i in range(size):
-        print((offset + i * increment) % size, " ", end = "")
-    print()
-
-
-
-    print()
-    print("new stack")
-    deck = list(range(size))
-    newStack(deck)
-    print(deck)
-
-    offset = 0
-    increment = 1
-    increment = -increment
-    offset -= 1
-    for i in range(size):
-        print((offset + i * increment) % size, " ", end = "")
-    print()
-
-
-
-    print()
-    print("cut")
-    deck = list(range(size))
-    deck = cut(deck, 3)
-    print(deck)
-
-    offset = 0
-    increment = 1
-    offset += value + 1
-    for i in range(size):
-        print((offset + i * increment) % size, " ", end = "")
-    print()
-
-
-
-    deck = list(range(size))
-    offset = 0
-    increment = 1
-
-    print()
-    print("test")
-    value = 2
-    deck = deal(deck, value)
-    increment += int(size / value)
-
-    value = 3
-    deck = deal(deck, value)
-    increment += int(size / value)
-
-    print(deck)
-    for i in range(size):
-        print((offset + i * increment) % size, " ", end = "")
-    print()
-    print()
-
-
-# what number is on the card that ends up in position 2020?
-
-def main():
-    with open("input/day22.txt") as file:
-        techniques = [line.strip() for line in file.readlines()]
-    
-    deck = list(range(10007))
+def parseTechniques(techniques, size):
+    a = 1
+    b = 0
     for t in techniques:
+        value = t.split()[-1]
         if t.count("increment"):
-            deck = deal(deck, int(t.replace("deal with increment ", "")))
+            A = int(value)
+            B = 0
         if t.count("stack"):
-            newStack(deck)
+            A = -1
+            B = -1
         if t.count("cut"):
-            deck = cut(deck, int(t.replace("cut ", "")))
-    #print(deck)
-    for i, c in enumerate(deck):
-        if c == 2019:
-            print("part 1:", i, i == 3939)
-    
+            A = 1
+            B = -int(value)
+        a, b = combineFunctions(a, b, A, B, size)
+    return a, b
 
-    # size9315717514047 space cards
-    # 101741582076661 times in a row
+# f(x) = ax + b
+# Returns the position of card x after applying the shuffle
+def applyShuffle(a, b, x, size):
+    return (a * x + b) % size
 
-    deck = list(range(10007))
-    offset = 0
-    increment = 1
-    for t in techniques:
-        # deal
-        if t.count("increment"):
-            value = int(t.replace("deal with increment ", ""))
-            increment *= int(1 + len(deck) / value)
-        # new stack
-        if t.count("stack"):
-            increment = -increment
-            offset -= 1
-        # cut
-        if t.count("cut"):
-            value = int(t.replace("cut ", ""))
-            offset += value
-    
-    """for i in range(101741582076661):
-        if i % 10000000 == 0:
-            print(i)
-        pass"""
-    print((offset + 2019 * increment) % len(deck))
-    print((offset + 3939 * increment) % len(deck))
+# Returns which card will be on position x after applying the shuffle
+def applyShuffleInverted(a, b, x, size):
+    return ((x - b) * modularInverse(a, size)) % size
 
+# g(f(x)) = Af(x) + B = Aax + Ab + B
+def combineFunctions(a, b, A, B, size):
+    return (A * a) % size, (A * b + B) % size
 
-def newStack(deck):
-    deck.reverse()
+def modularInverse(x, size):
+    return modularExponentiation(x, size - 2, size)
 
-def cut(deck, n):
-    newDeck = deck[n:] + deck[:n]
-    return newDeck
+def modularExponentiation(x, iterations, size):
+    if iterations == 0:
+        return 1
+    elif iterations % 2 == 0:
+        return modularExponentiation((x * x) % size, iterations / 2, size)
+    else:
+        return (x * modularExponentiation(x, iterations - 1, size)) % size
 
-def deal(deck, increment):
-    newDeck = [0] * len(deck)
-    for i in range(len(deck)):
-        newDeck[(i * increment) % len(deck)] = deck[i]
-    return newDeck
+def exponentiationBySquaring(a, b, iterations, size):
+    if iterations == 1:
+        return a, b
+    elif iterations % 2 == 0:
+        a, b = combineFunctions(a, b, a, b, size)
+        return exponentiationBySquaring(a, b, iterations / 2, size)
+    else:
+        A, B = exponentiationBySquaring(a, b, iterations - 1, size)
+        return combineFunctions(a, b, A, B, size)
 
-start = time.time()
-test()
-main()
-print(time.time() - start)
+aoc.runLines(main, "day22.txt")
