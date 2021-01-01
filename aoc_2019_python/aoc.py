@@ -1,0 +1,28 @@
+import time
+
+def runLines(mainFunction, day):
+    with open("input/" + day) as file:
+        rawInput = file.readlines()
+    run(mainFunction, rawInput)
+
+def runRaw(mainFunction, day):
+    with open("input/" + day) as file:
+        rawInput = file.read()
+    run(mainFunction, rawInput)
+
+def run(mainFunction, rawInput):
+    start = time.time()
+    part1, part2 = mainFunction(rawInput)
+    executionTime = time.time() - start
+    executionTime = round(executionTime * 1000)
+    print("Execution time:", executionTime, "ms")
+    print("Part 1:", part1)
+    print("Part 2:", part2)
+
+lastTime = time.time()
+def timeDiff(description):
+    global lastTime
+    t = time.time() - lastTime
+    t = round(t * 1000)
+    print(description, t)
+    lastTime = time.time()
