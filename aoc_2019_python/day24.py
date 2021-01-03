@@ -1,15 +1,15 @@
-import time
+import aoc
 from collections import defaultdict
 
-def main():
+def main(input_lines):
     grid = defaultdict(lambda : False)
-    with open("input/day24.txt") as file:
-        for y, line in enumerate(file.readlines()):
-            for x, c in enumerate(line.strip()):
-                grid[(x, y, 0)] = c == "#"
+    for y, line in enumerate(input_lines):
+        for x, c in enumerate(line.strip()):
+            grid[(x, y, 0)] = c == "#"
     
-    do_part1(grid)
-    do_part2(grid)
+    part1 = do_part1(grid)
+    part2 = do_part2(grid)
+    return part1, part2
     
 def do_part1(grid):
     seen = set()
@@ -40,10 +40,9 @@ def do_part1(grid):
                     newGrid[(x, y, 0)] = grid[(x, y, 0)]
         grid = newGrid.copy()
     
-    print("part 1:", biodiversity, biodiversity == 28781019)
+    return biodiversity
 
 def do_part2(grid):
-    #printGrid(grid, 0)
     lowest = 0
     highest = 0
     for _ in range(200):
@@ -87,21 +86,8 @@ def do_part2(grid):
                     else:
                         newGrid[(x, y, level)] = grid[(x, y, level)]
         grid = newGrid.copy()
-        #printGrid(grid, i + 1)
     
     part2 = len([x for x in grid.values() if x])
-    print("part 2:", part2, part2 == 1939)
-  
-def printGrid(grid, i):
-    print("")
-    print("iteration", i)
-    for y in range(5):
-        for level in range(-5, 5 + 1):
-            print(" ", end = '')
-            for x in range(5):
-                print("#" if grid[(x, y, level)] else "." if x != 2 or y != 2 else "?", end = "")
-        print("")
+    return part2
 
-start = time.time()
-main()
-print(time.time() - start)
+aoc.run_lines(main, "day24.txt")

@@ -1,6 +1,7 @@
-def main():
-    with open("input/day8.txt") as file:
-        data = [int(x) for x in file.read()]
+import aoc
+
+def main(puzzle_input):
+    data = [int(x) for x in puzzle_input]
     width = 25
     height = 6
     
@@ -14,9 +15,8 @@ def main():
         if values[0] < best:
             best = values[0]
             part1 = values[1] * values[2]
-    print("part 1", part1, part1 == 2480)
     
-    part2 = ""
+    part2 = "\n"
     for y in range(height):
         for x in range(width):
             for i in range(len(data) // (width * height)):
@@ -28,7 +28,7 @@ def main():
                     part2 += "#"
                     break
         part2 += "\n"
-    print("part 2")
-    print(part2)
     
-main()
+    return part1, part2
+    
+aoc.run_raw(main, "day08.txt")

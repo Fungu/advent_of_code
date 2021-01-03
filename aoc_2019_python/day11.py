@@ -1,52 +1,45 @@
-import intcode
-import datetime
-import cmath
+import aoc
+from intcode import Intcode
 from collections import defaultdict
 
-def main():
-    with open("input/day11.txt") as file:
-        memory = [int(val) for val in file.read().split(",")]
-    memory += [0] * 1000
-    
-    paint = defaultdict(lambda : 0)
-    calculatePaint(memory.copy(), paint)
+def main(puzzle_input):
+    paint = defaultdict(int)
+    calculate_paint(puzzle_input, paint)
     part1 = len(paint)
 
-    paint = defaultdict(lambda : 0)
+    paint = defaultdict(int)
     paint[0] = 1
-    xMin, xMax, yMin, yMax = calculatePaint(memory.copy(), paint)
+    xmin, xmax, ymin, ymax = calculate_paint(puzzle_input, paint)
     
-    print("part 1:", part1, part1 == 1964)
-    print("part 2:")
-    for y in range(yMin, yMax + 1):
-        for x in range(xMin, xMax + 1):
+    part2 = ""
+    for y in range(ymin, ymax + 1):
+        part2 += "\n"
+        for x in range(xmin, xmax + 1):
             if paint[x + y * 1j] == 1:
-                print("#", end = '')
+                part2 += "#"
             else:
-                print(" ", end = '')
-        print("")
+                part2 += " "
+    
+    return part1, part2
 
-def calculatePaint(memory, paint):
-    xMin = yMin = 1000
-    xMax = yMax = -1000
+def calculate_paint(puzzle_input, paint):
+    xmin = ymin = float("inf")
+    xmax = ymax = -float("inf")
     pos = 0
     facing = -1j
 
-    ip = 0
-    finished = False
-    relativeBase = 0
-    while finished == False:
-        output = []
-        ip, finished, relativeBase = intcode.runProgram(memory, [paint[pos]], output, ip, relativeBase)
-        paint[pos] = output[0]
-        facing *= (1j if output[1] == 1 else -1j)
+    computer = Intcode(puzzle_input)
+    while not computer.finished:
+        computer.output.clear()
+        computer.input.append(paint[pos])
+        computer.run_program()
+        paint[pos] = computer.output[0]
+        facing *= (1j if computer.output[1] == 1 else -1j)
         pos += facing
-        xMin = min(xMin, pos.real)
-        xMax = max(xMax, pos.real)
-        yMin = min(yMin, pos.imag)
-        yMax = max(yMax, pos.imag)
-    return int(xMin), int(xMax), int(yMin), int(yMax)
+        xmin = min(xmin, pos.real)
+        xmax = max(xmax, pos.real)
+        ymin = min(ymin, pos.imag)
+        ymax = max(ymax, pos.imag)
+    return int(xmin), int(xmax), int(ymin), int(ymax)
 
-start = datetime.datetime.now()
-main()
-print(datetime.datetime.now() - start)
+aoc.run_raw(main, "day11.txt")

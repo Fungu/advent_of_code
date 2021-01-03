@@ -1,45 +1,40 @@
+import aoc
 import math
-import datetime
+import itertools
 
-def main():
-    start = datetime.datetime.now()
-    with open("input/day10.txt") as file:
-        # grid becomes transposed :(
-        grid = [[char.strip() == "#" for char in line.strip()] for line in file.readlines()]
-    asteroids = {}
-    for x in range(len(grid)):
-        for y in range(len(grid[0])):
-            if grid[x][y]:
-                asteroids[(y, x)] = True
+def main(input_lines):
+    asteroids = {(x, y) : 0 for x, y in itertools.product(range(len(input_lines)), range(len(input_lines[0].strip()))) if input_lines[y][x] == "#"}
     
     part1 = 0
     for current in asteroids:
-        nrSeen = 0
+        seen_count = 0
         for target in asteroids:
-            if canSee(asteroids, current, target):
-                nrSeen += 1
-        if nrSeen > part1:
-            part1 = nrSeen
-            lazerPos = current
-    print("part 1:", part1, part1 == 247)
+            if can_see(asteroids, current, target):
+                seen_count += 1
+        if seen_count > part1:
+            part1 = seen_count
+            lazer_pos = current
 
     for current in asteroids:
-        asteroids[current] = math.atan2(lazerPos[1] - current[1], lazerPos[0] - current[0]) - math.pi / 2
+        asteroids[current] = math.atan2(lazer_pos[1] - current[1], lazer_pos[0] - current[0]) - math.pi / 2
         if asteroids[current] < 0:
             asteroids[current] += math.pi * 2
     
     destroyed = 0
-    asteroids = {k: v for k, v in sorted(asteroids.items(), key=lambda item: item[1])}
+    asteroids = {k : v for k, v in sorted(asteroids.items(), key=lambda item: item[1])}
     for pos in asteroids:
-        if canSee(asteroids, lazerPos, pos):
+        if can_see(asteroids, lazer_pos, pos):
             destroyed += 1
             if destroyed == 200:
                 part2 = pos[0] * 100 + pos[1]
                 break
+    
+    print("part 1:", part1, part1 == 247)
     print("part 2:", part2, part2 == 1919)
-    print(datetime.datetime.now() - start)
 
-def canSee(asteroids, current, target):
+    return part1, part2
+
+def can_see(asteroids, current, target):
     if current != target:
         dx = target[0] - current[0]
         dy = target[1] - current[1]
@@ -58,4 +53,4 @@ def canSee(asteroids, current, target):
     else:
         return False
 
-main()
+aoc.run_lines(main, "day10.txt")

@@ -1,7 +1,7 @@
-import time
+import aoc
 import numpy
 
-def getPatternMatrix(size):
+def get_pattern_matrix(size):
     ret = []
     for i in range(1, size + 1):
         pattern = [0] * i + [1] * i + [0] * i + [-1] * i
@@ -9,21 +9,18 @@ def getPatternMatrix(size):
         ret.append(pattern[1 : size + 1])
     return ret
 
-def main():
-    with open("input/day16.txt") as file:
-        values = [int(val) for val in file.read()]
+def main(puzzle_input):
+    values = [int(val) for val in puzzle_input]
     
-    patternMatrix = numpy.array(getPatternMatrix(len(values)))
+    pattern_matrix = numpy.array(get_pattern_matrix(len(values)))
     values = numpy.array(values)
     for _ in range(100):
-        values = numpy.matmul(patternMatrix, values)
+        values = numpy.matmul(pattern_matrix, values)
         values = [abs(r) % 10 for r in values]
     part1 = "".join(map(str, values[:8]))
-    print("part 1:", part1, part1 == "27831665")
 
-    with open("input/day16.txt") as file:
-        values = file.read()
-        values *= 10000
+    values = puzzle_input
+    values *= 10000
     offset = int(values[:7])
     values = values[offset:]
     values = [int(val) for val in values]
@@ -35,9 +32,7 @@ def main():
             s -= values[i]
             values[i] = v
     part2 = "".join(map(str, values[:8]))
-    print("part 2:", part2, part2 == "36265589")
 
+    return part1, part2
 
-start = time.time()
-main()
-print(time.time() - start)
+aoc.run_raw(main, "day16.txt")

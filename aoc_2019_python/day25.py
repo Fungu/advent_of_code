@@ -1,7 +1,7 @@
-from intcode2 import Intcode
+import aoc
+from intcode import Intcode
 from collections import defaultdict
 import networkx as nx
-import time
 
 """
 Movement via north, south, east, or west.
@@ -15,8 +15,8 @@ For example, if the droid is carrying a green ball, you can drop it with drop gr
 To get a list of all of the items the droid is currently carrying, use the command inv (for "inventory").
 """
 
-def manual_game():
-    computer = Intcode("input/day25.txt")
+def manual_game(puzzle_input):
+    computer = Intcode(puzzle_input)
     while not computer.finished:
         computer.run_program()
         computer.print_output()
@@ -25,15 +25,16 @@ def manual_game():
 
         computer.add_ascii_input(input())
         computer.output.clear()
+    return None, None
 
-def main():
+def main(puzzle_input):
     blacklist = ["molten lava", "photons", "infinite loop", "giant electromagnet", "escape pod"]
     opposites = {"north" : "south",
                 "south" : "north",
                 "east" : "west",
                 "west" : "east"}
 
-    computer = Intcode("input/day25.txt")
+    computer = Intcode(puzzle_input)
     computer.run_program()
 
     items = []
@@ -107,7 +108,8 @@ def main():
             break
 
     part1 = computer.get_output_string().split("typing")[1].strip().split(" ")[0]
-    print("part 1:", part1)
+
+    return part1, "Align the Warp Drive"
 
 
 def output_to_string(output):
@@ -157,7 +159,5 @@ def gray_code(n):
     gray_code_recurse(g,n-1)
     return g
 
-start = time.time()
-main()
-#manual_game()
-print(time.time() - start)
+aoc.run_raw(main, "day25.txt")
+#aoc.run_raw(manual_game, "day25.txt")

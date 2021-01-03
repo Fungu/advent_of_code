@@ -8,7 +8,7 @@ for i,x in enumerate(A):
 
 print(1j ** 0, 1j ** 1, 1j ** 2, 1j ** 3, 1j ** -1)
 
-print("")
+print()
 facing = 1j
 for i in range(5):
     print(facing)

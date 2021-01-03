@@ -1,7 +1,6 @@
-def main():
-    with open("input/day3.txt") as file:
-        lines = file.readlines()
-    
+import aoc
+
+def main(input_lines):
     visitedA = {}
     visitedB = {}
     part1 = float("inf")
@@ -14,7 +13,7 @@ def main():
         'L':[-1, 0],
     }
 
-    for line in lines:
+    for line in input_lines:
         pos = [0, 0]
         distance = 0
         for element in line.split(","):
@@ -34,8 +33,7 @@ def main():
 
         visitedB = visitedA
         visitedA = {}
-    
-    print("part 1: ", part1)
-    print("part 2: ", part2)
 
-main()
+    return part1, part2    
+
+aoc.run_lines(main, "day03.txt")
