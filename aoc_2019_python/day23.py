@@ -1,10 +1,10 @@
-from intcode2 import Intcode
-import time
+import aoc
+from intcode import Intcode
 
-def main():
+def main(puzzle_input):
     network = []
     for address in range(50):
-        computer = Intcode("input/day23.txt")
+        computer = Intcode(puzzle_input)
         computer.input.append(address)
         computer.run_program()
         network.append(computer)
@@ -42,9 +42,6 @@ def main():
             network[0].input.append(nat_value[0])
             network[0].input.append(nat_value[1])
     
-    print("part 1:", part1, part1 == 22074)
-    print("part 2:", part2, part2 == 14257)
-    
-start = time.time()
-main()
-print(time.time() - start)
+    return part1, part2
+
+aoc.run_raw(main, "day23.txt")

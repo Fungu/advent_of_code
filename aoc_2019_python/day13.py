@@ -1,33 +1,47 @@
-import intcode
-import datetime
+import aoc
+from intcode import Intcode
 
-def main():
-    with open("input/day13.txt") as file:
-        memory = [int(val) for val in file.read().split(",")]
-    memory += [0] * 1000
+def main(puzzle_input):
+    computer = Intcode(puzzle_input)
+    computer.run_program()
+    part1 = sum([1 for i in range(2, len(computer.output), 3) if computer.output[i] == 2])
 
-    output = []
-    intcode.runProgram(memory.copy(), [], output)
-    part1 = 0
-    for i in range(2, len(output), 3):
-        if output[i] == 2:
-            part1 += 1
-    print("part 1:", part1, part1 == 420)
-
-    ip = 0
-    relativeBase = 0
-    programInput = []
-    memory[0] = 2
+    computer = Intcode(puzzle_input)
+    computer.memory[0] = 2
     score = 0
-    highestX = 0
-    highestY = 0
+    while not computer.finished:
+        computer.output.clear()
+        computer.run_program()
+        output = computer.output
+        for i in range(0, len(output), 3):
+            #X=-1, Y=0 -> third is score
+            if output[i] == -1 and output[i + 1] == 0:
+                score = output[i + 2]
+            else:
+                #3 is a horizontal paddle tile. The paddle is indestructible.
+                if output[i + 2] == 3: 
+                    paddle_pos = output[i]
+                #4 is a ball tile. The ball moves diagonally and bounces off objects.
+                elif output[i + 2] == 4: 
+                    ball_pos = output[i]
+        if paddle_pos > ball_pos:
+            computer.input.append(-1)
+        elif paddle_pos < ball_pos:
+            computer.input.append(1)
+        else:
+            computer.input.append(0)
+    
+    return part1, score
+
+def manual_game(puzzle_input):
+    computer = Intcode(puzzle_input)
+    computer.memory[0] = 2
+    score = 0
     tiles = {}
-    while True:
-        ip, finished, relativeBase = intcode.runProgram(memory, programInput, output, ip, relativeBase)
-        if finished:
-            break
-        ballPos = 0
-        paddlePos = 0
+    while not computer.finished:
+        computer.output.clear()
+        computer.run_program()
+        output = computer.output
         for i in range(0, len(output), 3):
             #X=-1, Y=0 -> third is score
             if output[i] == -1 and output[i + 1] == 0:
@@ -45,46 +59,26 @@ def main():
                 #3 is a horizontal paddle tile. The paddle is indestructible.
                 elif output[i + 2] == 3: 
                     char = "-"
-                    paddlePos = output[i]
                 #4 is a ball tile. The ball moves diagonally and bounces off objects.
                 elif output[i + 2] == 4: 
                     char = "O"
-                    ballPos = output[i]
                 tiles[(output[i], output[i + 1])] = char
-                highestX = max(highestX, output[i])
-                highestY = max(highestY, output[i + 1])
-        output.clear()
-        """for y in range(highestY + 1):
-            for x in range(highestX + 1):
+        
+        print("Score:", score)
+        for y in range(max([x for x, _ in tiles.keys()]) + 1):
+            for x in range(max([y for _, y in tiles.keys()]) + 1):
                 if (x, y) in tiles:
                     print(tiles[(x, y)], end='')
             print("")
-        """
-        if paddlePos > ballPos:
-            programInput.append(-1)
-        elif paddlePos < ballPos:
-            programInput.append(1)
-        else:
-            programInput.append(0)
-        """
-        userInput = input("")
-        if userInput == "a":
-            programInput.append(-1)
-            print("left")
-        if userInput == "d":
-            programInput.append(1)
-            print("right")
-        if userInput == " ":
-            programInput.append(0)
-            print("pass")
-        """
-    for i in range(0, len(output), 3):
-        #X=-1, Y=0 -> third is score
-        if output[i] == -1 and output[i + 1] == 0:
-            score = output[i + 2]
-    
-    print("part 2:", score, score == 21651)
+        
+        user_input = input()
+        if user_input == "a":
+            computer.input.append(-1)
+        if user_input == "d":
+            computer.input.append(1)
+        if user_input == " ":
+            computer.input.append(0)
+    return None, None
 
-start = datetime.datetime.now()
-main()
-print(datetime.datetime.now() - start)
+#aoc.run_raw(manual_game, "day13.txt")
+aoc.run_raw(main, "day13.txt")

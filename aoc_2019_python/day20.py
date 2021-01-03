@@ -1,17 +1,16 @@
-import time
+import aoc
 from collections import defaultdict
 import networkx as nx
 
-def main():
+def main(input_lines):
     area = defaultdict(lambda : "#")
     width = 0
     height = 0
-    with open("input/day20.txt") as file:
-        for y, line in enumerate(file.readlines()):
-            for x, c in enumerate(line):
-                area[(x, y)] = c
-                width = max(width, x)
-            height = max(height, y)
+    for y, line in enumerate(input_lines):
+        for x, c in enumerate(line):
+            area[(x, y)] = c
+            width = max(width, x)
+        height = max(height, y)
     
     for y in range(height):
         for x in range(width):
@@ -47,7 +46,6 @@ def main():
                 b = findAdjacent(area, findOtherSide(area, (x, y)))
                 graph.add_edge(a, b)
     part1 = nx.shortest_path_length(graph, startPos, endPos)
-    print("part 1", part1, part1 == 684)
 
     graph = nx.Graph()
     for level in range(30):
@@ -64,7 +62,8 @@ def main():
                     b = findAdjacent(area, findOtherSide(area, (x, y)))
                     graph.add_edge((a[0], a[1], level), (b[0], b[1], level + levelChange))
     part2 = nx.shortest_path_length(graph, (startPos[0], startPos[1], 0), (endPos[0], endPos[1], 0))
-    print("part 2", part2, part2 == 7758)
+
+    return part1, part2
     
     
 def isPortal(cell):
@@ -82,8 +81,4 @@ def findOtherSide(area, pos):
             return key
     print("findOtherSide", area[pos], pos)
 
-
-
-start = time.time()
-main()
-print(time.time() - start)
+aoc.run_lines(main, "day20.txt")

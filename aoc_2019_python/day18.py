@@ -1,21 +1,21 @@
-import time
+import aoc
 from collections import deque
 
-def main():
-    do_part1()
-    do_part2()
+def main(input_lines):
+    part1 = do_part1(input_lines)
+    part2 = do_part2(input_lines)
+    return part1, part2
 
-def do_part1():
+def do_part1(input_lines):
     area = {}
     keys = {}
     width = 0
     height = 0
-    with open("input/day18.txt") as file:
-        for y, line in enumerate(file.readlines()):
-            for x, c in enumerate(line.strip()):
-                area[(x, y)] = c.strip()
-                width = max(width, x)
-            height = max(height, y)
+    for y, line in enumerate(input_lines):
+        for x, c in enumerate(line.strip()):
+            area[(x, y)] = c.strip()
+            width = max(width, x)
+        height = max(height, y)
     
     for x in range(width):
         for y in range(height):
@@ -42,24 +42,23 @@ def do_part1():
 
             nk = "".join(sorted(seen_keys + k))
             ndistance = distance + kdistance
-            newNode = (k, nk, ndistance)
+            new_node = (k, nk, ndistance)
             if (k, nk) not in seen or seen[(k, nk)] > ndistance:
                 seen[(k, nk)] = ndistance
-                nodes.append(newNode)
+                nodes.append(new_node)
 
-    print("part 1:", part1, part1 == 4118)
+    return part1
 
-def do_part2():
+def do_part2(input_lines):
     area = {}
     keys = {}
     width = 0
     height = 0
-    with open("input/day18.txt") as file:
-        for y, line in enumerate(file.readlines()):
-            for x, c in enumerate(line.strip()):
-                area[(x, y)] = c.strip()
-                width = max(width, x)
-            height = max(height, y)
+    for y, line in enumerate(input_lines):
+        for x, c in enumerate(line.strip()):
+            area[(x, y)] = c.strip()
+            width = max(width, x)
+        height = max(height, y)
     
     w = int(width / 2)
     h = int(height / 2)
@@ -102,13 +101,13 @@ def do_part2():
 
                 nk = "".join(sorted(seen_keys + k))
                 ndistance = distance + kdistance
-                newNode = (k, nk, ndistance)
+                new_node = (k, nk, ndistance)
                 if (k, nk) not in seen or seen[(k, nk)] > ndistance:
                     seen[(k, nk)] = ndistance
-                    nodes.append(newNode)
+                    nodes.append(new_node)
         part2 += quadrant_distance
 
-    print("part 2:", part2, part2 == 1828)
+    return part2
 
 def djikstra(area, keys):
     """
@@ -127,24 +126,24 @@ def djikstra(area, keys):
     for k, v in keys.items():
         key_dict[k] = {}
 
-        openSet = []
-        openSet.append(v)
-        closedSet = set()
+        open_set = []
+        open_set.append(v)
+        closed_set = set()
         distance = {}
         distance[v] = 0
         parents = {}
-        while len(openSet) > 0:
-            x, y = openSet.pop(0)
-            closedSet.add((x, y))
+        while len(open_set) > 0:
+            x, y = open_set.pop(0)
+            closed_set.add((x, y))
             for xx, yy in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
                 testPos = (x + xx, y + yy)
                 cell = area[(x + xx, y + yy)]
-                if testPos in closedSet or testPos in openSet:
+                if testPos in closed_set or testPos in open_set:
                     continue
                 if cell == "#":
                     continue
 
-                openSet.append(testPos)
+                open_set.append(testPos)
                 parents[testPos] = (x, y)
                 distance[testPos] = distance[(x, y)] + 1
 
@@ -159,6 +158,4 @@ def djikstra(area, keys):
                     key_dict[k][cell] = (distance[testPos], blockers)
     return key_dict
 
-start = time.time()
-main()
-print(time.time() - start)
+aoc.run_lines(main, "day18.txt")

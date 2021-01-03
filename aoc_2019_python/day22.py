@@ -1,71 +1,64 @@
 import aoc
 
-def main(inputLines):
+def main(input_lines):
     # Part 1
     # What is the position of card 2019?
     size = 10007
-    a, b = parseTechniques(inputLines, size)
-    part1 = applyShuffle(a, b, 2019, size)
+    a, b = parse_techniques(input_lines, size)
+    part1 = apply_shuffle(a, b, 2019, size)
 
     # Part 2
     # What number is on the card that ends up in position 2020?
     size = 119315717514047
     iterations = 101741582076661
-    a, b = parseTechniques(inputLines, size)
-    a, b = exponentiationBySquaring(a, b, iterations, size)
-    part2 = applyShuffleInverted(a, b, 2020, size)
+    a, b = parse_techniques(input_lines, size)
+    a, b = modular_exponentiation(a, b, iterations, size)
+    part2 = apply_shuffle_inverted(a, b, 2020, size)
 
     return part1, part2
 
-def parseTechniques(techniques, size):
+def parse_techniques(techniques, size):
     a = 1
     b = 0
     for t in techniques:
         value = t.split()[-1]
         if t.count("increment"):
-            A = int(value)
-            B = 0
+            c = int(value)
+            d = 0
         if t.count("stack"):
-            A = -1
-            B = -1
+            c = -1
+            d = -1
         if t.count("cut"):
-            A = 1
-            B = -int(value)
-        a, b = combineFunctions(a, b, A, B, size)
+            c = 1
+            d = -int(value)
+        a, b = combine_functions(a, b, c, d, size)
     return a, b
 
 # f(x) = ax + b
 # Returns the position of card x after applying the shuffle
-def applyShuffle(a, b, x, size):
+def apply_shuffle(a, b, x, size):
     return (a * x + b) % size
 
 # Returns which card will be on position x after applying the shuffle
-def applyShuffleInverted(a, b, x, size):
-    return ((x - b) * modularInverse(a, size)) % size
+def apply_shuffle_inverted(a, b, x, size):
+    return ((x - b) * modular_inverse(a, size)) % size
 
-# g(f(x)) = Af(x) + B = Aax + Ab + B
-def combineFunctions(a, b, A, B, size):
-    return (A * a) % size, (A * b + B) % size
+# g(f(x)) = cf(x) + d = cax + cb + d
+def combine_functions(a, b, c, d, size):
+    return (c * a) % size, (c * b + d) % size
 
-def modularInverse(x, size):
-    return modularExponentiation(x, size - 2, size)
+def modular_inverse(x, size):
+    ret, _ = modular_exponentiation(x, 0, size - 2, size)
+    return ret
 
-def modularExponentiation(x, iterations, size):
-    if iterations == 0:
-        return 1
-    elif iterations % 2 == 0:
-        return modularExponentiation((x * x) % size, iterations / 2, size)
-    else:
-        return (x * modularExponentiation(x, iterations - 1, size)) % size
-
-def exponentiationBySquaring(a, b, iterations, size):
+def modular_exponentiation(a, b, iterations, size):
     if iterations == 1:
         return a, b
     elif iterations % 2 == 0:
-        a, b = combineFunctions(a, b, a, b, size)
-        return exponentiationBySquaring(a, b, iterations / 2, size)
+        a, b = combine_functions(a, b, a, b, size)
+        return modular_exponentiation(a, b, iterations / 2, size)
     else:
-        A, B = exponentiationBySquaring(a, b, iterations - 1, size)
-        return combineFunctions(a, b, A, B, size)
+        c, d = modular_exponentiation(a, b, iterations - 1, size)
+        return combine_functions(a, b, c, d, size)
 
-aoc.runLines(main, "day22.txt")
+aoc.run_lines(main, "day22.txt")

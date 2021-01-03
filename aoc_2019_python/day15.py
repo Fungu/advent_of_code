@@ -1,86 +1,83 @@
-import intcode
-import time
+import aoc
+from intcode import Intcode
 import astar
 from collections import defaultdict
 
-def main():
-    with open("input/day15.txt") as file:
-        memory = [int(val) for val in file.read().split(",")]
-
+def main(puzzle_input):
     #north (1), south (2), west (3), and east (4).
-    dirToInput = {
+    dir_input = {
         ( 0,-1): 1,
         ( 0, 1): 2,
         (-1, 0): 3,
         ( 1, 0): 4,
     }
-    openStack = list(dirToInput.keys())
+    open_stack = list(dir_input.keys())
     area = defaultdict(lambda : -1)
     pos = (0, 0)
     area[pos] = 1
-    ip = 0
-    relativeBase = 0
-    while len(openStack) > 0:
-        pathList = astar.astar(area, pos, openStack.pop())[1:]
+    computer = Intcode(puzzle_input)
+    while len(open_stack) > 0:
+        pathList = astar.astar(area, pos, open_stack.pop())[1:]
 
         for path in pathList:
-            if path in openStack:
-                openStack.remove(path)
+            if path in open_stack:
+                open_stack.remove(path)
 
-            direction = dirToInput[(path[0] - pos[0], path[1] - pos[1])]
-            output = []
-            ip, _, relativeBase = intcode.runProgram(memory, [direction], output, ip, relativeBase)
+            direction = dir_input[(path[0] - pos[0], path[1] - pos[1])]
+            computer.output.clear()
+            computer.input.append(direction)
+            computer.run_program()
             
-            area[path] = output[0]
+            area[path] = computer.output[0]
             #0: The repair droid hit a wall. Its position has not changed.
-            if output[0] == 0:
+            if computer.output[0] == 0:
                 pathList.clear()
             #1: The repair droid has moved one step in the requested direction.
-            elif output[0] == 1:
+            elif computer.output[0] == 1:
                 pos = path
             #2: The repair droid has moved one step in the requested direction; its new position is the location of the oxygen system.
-            elif output[0] == 2:
-                oxygenPos = path
+            elif computer.output[0] == 2:
+                oxygen_pos = path
                 pos = path
 
-            for testDir in [(0, -1), (0, 1), (-1, 0), (1, 0)]:
-                testPos = (pos[0] + testDir[0], pos[1] + testDir[1])
-                if area[testPos] == -1 and testPos not in openStack:
-                    openStack.append(testPos)
+            for test_dir in [(0, -1), (0, 1), (-1, 0), (1, 0)]:
+                test_pos = (pos[0] + test_dir[0], pos[1] + test_dir[1])
+                if area[test_pos] == -1 and test_pos not in open_stack:
+                    open_stack.append(test_pos)
 
     #printGrid(area, pos)
-    part1 = len(astar.astar(area, (0, 0), oxygenPos)) - 1
-    print("part 1:", part1, part1 == 280)
+    part1 = len(astar.astar(area, (0, 0), oxygen_pos)) - 1
     
-    nextOpenSet = set()
-    nextOpenSet.add(oxygenPos)
-    closedSet = set()
+    next_open_set = set()
+    next_open_set.add(oxygen_pos)
+    closed_set = set()
     part2 = -1
-    while len(nextOpenSet) > 0 and len(nextOpenSet) < 2000:
+    while len(next_open_set) > 0 and len(next_open_set) < 2000:
         part2 += 1
-        openSet = nextOpenSet
-        nextOpenSet = set()
-        for pos in openSet:
-            closedSet.add(pos)
-            for testDir in [(0, -1), (0, 1), (-1, 0), (1, 0)]:
-                testPos = (pos[0] + testDir[0], pos[1] + testDir[1])
-                if area[(testPos[0], testPos[1])] <= 0:
+        open_set = next_open_set
+        next_open_set = set()
+        for pos in open_set:
+            closed_set.add(pos)
+            for test_dir in [(0, -1), (0, 1), (-1, 0), (1, 0)]:
+                test_pos = (pos[0] + test_dir[0], pos[1] + test_dir[1])
+                if area[(test_pos[0], test_pos[1])] <= 0:
                     continue
-                if testPos in closedSet or testPos in openSet or testPos in nextOpenSet:
+                if test_pos in closed_set or test_pos in open_set or test_pos in next_open_set:
                     continue
-                nextOpenSet.add(testPos)
-    print("part 2:", part2, part2 == 400)
+                next_open_set.add(test_pos)
+
+    return part1, part2
 
 def printGrid(area, pos):
-    lowBounds = [0, 0]
-    highBounds = [0, 0]
+    low_bounds = [0, 0]
+    high_bounds = [0, 0]
     for a in area:
-        lowBounds[0] = min(lowBounds[0], a[0])
-        lowBounds[1] = min(lowBounds[1], a[1])
-        highBounds[0] = max(highBounds[0], a[0])
-        highBounds[1] = max(highBounds[1], a[1])
-    for y in range(lowBounds[1], highBounds[1] + 1):
-        for x in range(lowBounds[0], highBounds[0] + 1):
+        low_bounds[0] = min(low_bounds[0], a[0])
+        low_bounds[1] = min(low_bounds[1], a[1])
+        high_bounds[0] = max(high_bounds[0], a[0])
+        high_bounds[1] = max(high_bounds[1], a[1])
+    for y in range(low_bounds[1], high_bounds[1] + 1):
+        for x in range(low_bounds[0], high_bounds[0] + 1):
             if pos[0] == x and pos[1] == y:
                 print("X", end = '')
             elif x == 0 and y == 0:
@@ -95,6 +92,4 @@ def printGrid(area, pos):
                 print(" ", end = '')
         print("")
 
-start = time.time()
-main()
-print(time.time() - start)
+aoc.run_raw(main, "day15.txt")
