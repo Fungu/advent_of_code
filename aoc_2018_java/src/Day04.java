@@ -72,7 +72,7 @@ public class Day04 implements AocSolver {
 		}
 	}
 	
-
+	@Override
 	public void solve(List<String> inputLines) {
 		Pattern regex = Pattern.compile(".+\\:(?<time>[0-9]+)\\].+");
 		Pattern guardRegex = Pattern.compile(".+Guard #(?<id>[0-9]+).+");
@@ -106,7 +106,7 @@ public class Day04 implements AocSolver {
 		
 		Guard laziestGuard = guardMap.values().stream().max((a, b) -> (int)(a.getLaziness() - b.getLaziness())).get();
 		int laziestMinute = laziestGuard.getSleepPerMinute().entrySet().stream().max((a, b) -> a.getValue() - b.getValue()).get().getKey();
-		long part1 = laziestGuard.id * laziestMinute;
+		int part1 = laziestGuard.id * laziestMinute;
 		
 		laziestGuard = guardMap.values().stream().max((a, b) -> Collections.max(a.getSleepPerMinute().values()) - Collections.max(b.getSleepPerMinute().values())).get();
 		laziestMinute = laziestGuard.getSleepPerMinute().entrySet().stream().max((a, b) -> a.getValue() - b.getValue()).get().getKey();

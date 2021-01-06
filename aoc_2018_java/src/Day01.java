@@ -7,6 +7,7 @@ public class Day01 implements AocSolver {
         Aoc.runLines(new Day01());
     }
 
+    @Override
     public void solve(List<String> inputLines) {
         int part1 = 0;
         for (String line : inputLines) {

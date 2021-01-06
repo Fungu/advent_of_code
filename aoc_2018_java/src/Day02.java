@@ -6,6 +6,7 @@ public class Day02 implements AocSolver {
         Aoc.runLines(new Day02());
     }
 
+    @Override
     public void solve(List<String> inputLines) {
         int nrOfTwo = 0;
         int nrOfThree = 0;

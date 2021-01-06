@@ -8,6 +8,7 @@ public class Day03 implements AocSolver {
         Aoc.runLines(new Day03());
     }
 
+    @Override
     public void solve(List<String> inputLines) {
     	HashMap<IntTuple, Integer> fabric = new HashMap<>();
     	HashMap<Integer, Integer> xMap = new HashMap<>();
