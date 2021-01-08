@@ -1,5 +1,3 @@
-package advent2018;
-
 import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
