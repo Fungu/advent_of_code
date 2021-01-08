@@ -1,5 +1,3 @@
-package advent2018;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
