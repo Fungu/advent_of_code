@@ -39,4 +39,17 @@ public class Aoc {
     	System.out.println(message + " " + (System.currentTimeMillis() - prevTime));
     	prevTime = System.currentTimeMillis();
     }
+    
+    public static int wrap(int number, int min, int max) {
+    	return (int) wrap((long) number, (long) min, (long) max);
+    }
+    public static long wrap(long number, long min, long max) {
+    	while (number < min) {
+    		number += (max - min);
+    	} 
+    	while (number >= max) {
+    		number -= (max - min);
+    	}
+    	return number;
+    }
 }
