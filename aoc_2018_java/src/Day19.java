@@ -36,6 +36,7 @@ public class Day19 implements AocSolver {
 
 	Map<String, Predicate<?>> instructionsName = new HashMap<>();
 
+	@Override
 	public void solve(List<String> inputLines) {
 		populateInstructions();
 		long part1 = runProgram(inputLines, false);
