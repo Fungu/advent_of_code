@@ -7,6 +7,20 @@ public class IntTuple {
 		this.values = values;
 	}
 	
+	public void add(IntTuple otherIntTuple) {
+		if (values.length != otherIntTuple.values.length) {
+			throw new RuntimeException("IntTuple add requires values of the same length.");
+		}
+		for (int i = 0; i < values.length; i++) {
+			values[i] += otherIntTuple.values[i];
+		}
+	}
+	
+	@Override
+	public String toString() {
+		return Arrays.toString(values);
+	}
+	
 	@Override
 	public int hashCode() {
 		return Arrays.hashCode(values);
