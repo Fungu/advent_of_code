@@ -1,4 +1,3 @@
-import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
@@ -8,7 +7,7 @@ import java.util.Set;
 
 public class Day20 implements AocSolver {
 
-	public static void main(String[] args) throws IOException, InterruptedException {
+	public static void main(String[] args) {
 		Aoc.runRaw(new Day20());
 	}
 

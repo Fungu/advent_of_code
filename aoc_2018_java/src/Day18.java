@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Day18 implements AocSolver {
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		Aoc.runLines(new Day18());
 	}
 
