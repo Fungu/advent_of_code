@@ -15,16 +15,17 @@ public class Day22 implements AocSolver {
 	final int CLIMBING_GEAR = 1;
 	final int NEITHER = 2;
 	
-//		depth: 3879
-//		target: 8,713
-	int depth = 3879;
-	int targetX = 8;
-	int targetY = 713;
+	int depth;
+	int targetX;
+	int targetY;
 	
 	long[][] geologicIndexGrid = new long[targetY + 1 + 1000][targetX + 1 + 1000];
 
 	@Override
 	public void solve(List<String> inputLines) {
+		depth = Integer.parseInt(inputLines.get(0).replace("depth: ", ""));
+		targetX = Integer.parseInt(inputLines.get(1).replace("target: ", "").split(",")[0]);
+		targetY = Integer.parseInt(inputLines.get(1).replace("target: ", "").split(",")[1]);
 		for (int y = 0; y < geologicIndexGrid.length; y++) {
 			for (int x = 0; x < geologicIndexGrid[0].length; x++) {
 				geologicIndexGrid[y][x] = -1;
