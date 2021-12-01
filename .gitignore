@@ -3,3 +3,5 @@ __pycache__
 .metadata
 bin
 *.exe
+target
+Cargo.lock
