@@ -1,5 +1,5 @@
 use std::fs::File;
-use std::io::{BufRead, BufReader, self};
+use std::io::{self, BufRead, BufReader};
 
 fn main() -> io::Result<()> {
     let buf_reader = BufReader::new(File::open("input.txt")?);
@@ -11,8 +11,8 @@ fn main() -> io::Result<()> {
     let part1 = count_increases(values.clone());
 
     let mut sliding_values: Vec<i32> = Vec::new();
-    for i in 0 .. values.len() - 2 {
-        sliding_values.push(values[i] + values[i+1] + values[i+2]);
+    for i in 0..values.len() - 2 {
+        sliding_values.push(values[i] + values[i + 1] + values[i + 2]);
     }
 
     let part2 = count_increases(sliding_values.clone());
@@ -25,7 +25,7 @@ fn main() -> io::Result<()> {
 
 fn count_increases(values: Vec<i32>) -> i32 {
     let mut ret = 0;
-    for i in 0 .. values.len() - 1 {
+    for i in 0..values.len() - 1 {
         if values[i + 1] > values[i] {
             ret += 1;
         }

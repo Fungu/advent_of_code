@@ -1,13 +1,13 @@
-use std::fs::File;
-use std::io::{BufRead, BufReader, self};
 use regex::Regex;
+use std::fs::File;
+use std::io::{self, BufRead, BufReader};
 
 fn main() -> io::Result<()> {
     let buf_reader = BufReader::new(File::open("input.txt")?);
     let lines = buf_reader.lines();
 
     let regex = Regex::new(r"(?P<direction>\D*) (?P<value>\d*)").unwrap();
-    
+
     let mut horizontal = 0;
     let mut depth_a = 0;
     let mut depth_b = 0;
@@ -21,16 +21,16 @@ fn main() -> io::Result<()> {
             "forward" => {
                 horizontal += value;
                 depth_b += aim * value;
-            },
+            }
             "down" => {
                 depth_a += value;
                 aim += value;
-            },
+            }
             "up" => {
                 depth_a -= value;
                 aim -= value;
-            },
-            _ => panic!()
+            }
+            _ => panic!(),
         }
     }
 
