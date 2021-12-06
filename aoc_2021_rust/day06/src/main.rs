@@ -1,6 +1,7 @@
 use std::{
     fs::File,
     io::{self, BufRead, BufReader},
+    time::Instant,
 };
 
 fn main() -> io::Result<()> {
@@ -9,29 +10,30 @@ fn main() -> io::Result<()> {
         .lines()
         .map(|line| line.unwrap())
         .collect::<Vec<String>>();
+    let now = Instant::now();
 
-    let mut fishes: Vec<i32> = Vec::new();
-    for v in lines[0].split(",") {
-        fishes.push(v.parse::<i32>().unwrap());
-    }
-    for _generation in 0..80 {
-        let len = fishes.len();
-        for i in 0..len {
-            fishes[i] -= 1;
-            if fishes[i] < 0 {
-                fishes[i] = 6;
-                fishes.push(8);
-            }
-        }
-    }
+    let answer = solve(lines);
 
-    println!("Part 1: {}", fishes.len());
+    println!("Execution time: {} ms", now.elapsed().as_millis());
+    println!("Part 1: {}", answer.0);
+    println!("Part 2: {}", answer.1);
 
+    Ok(())
+}
+
+fn solve(lines: Vec<String>) -> (u64, u64) {
+    let part1 = simulate(&lines, 80);
+    let part2 = simulate(&lines, 256);
+
+    (part1, part2)
+}
+
+fn simulate(lines: &Vec<String>, generations: u32) -> u64 {
     let mut numbers: Vec<u64> = vec![0; 9];
     for v in lines[0].split(",") {
         numbers[v.parse::<i32>().unwrap() as usize] += 1;
     }
-    for _generation in 0..256 {
+    for _generation in 0..generations {
         let mut next_numbers: Vec<u64> = vec![0; 9];
         for i in 0..8 {
             next_numbers[i] = numbers[i + 1];
@@ -40,8 +42,5 @@ fn main() -> io::Result<()> {
         next_numbers[8] = numbers[0];
         numbers = next_numbers;
     }
-
-    println!("Part 2: {}", numbers.iter().sum::<u64>());
-
-    Ok(())
+    numbers.iter().sum::<u64>()
 }
