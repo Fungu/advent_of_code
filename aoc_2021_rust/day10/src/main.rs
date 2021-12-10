@@ -38,8 +38,8 @@ fn solve(lines: Vec<String>) -> (i32, u64) {
                 stack.push(c);
             } else {
                 let cc = stack.pop().unwrap_or('x');
-                if pairs.get(&cc).unwrap() != &c {
-                    part1 += costs.get(&c).unwrap();
+                if pairs[&cc] != c {
+                    part1 += costs[&c];
                     corrupted = true;
                     break;
                 }
@@ -50,13 +50,13 @@ fn solve(lines: Vec<String>) -> (i32, u64) {
             while !stack.is_empty() {
                 score *= 5;
                 let c = stack.pop().unwrap();
-                score += costs2.get(&c).unwrap();
+                score += costs2[&c];
             }
             scores.push(score);
         }
     }
     scores.sort();
-    let part2 = *scores.get(scores.len() / 2).unwrap();
+    let part2 = scores[scores.len() / 2];
 
     (part1, part2)
 }
