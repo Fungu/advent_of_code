@@ -1,7 +1,9 @@
 use std::{
+    cmp::Ordering,
+    collections::{BinaryHeap, HashSet},
     fs::File,
     io::{self, BufRead, BufReader},
-    time::Instant, cmp::Ordering, collections::{BinaryHeap, HashSet},
+    time::Instant,
 };
 
 fn main() -> io::Result<()> {
@@ -59,7 +61,11 @@ fn astar(grid: &Vec<Vec<u32>>) -> u32 {
     let end = (grid[0].len() as i32 - 1, grid.len() as i32 - 1);
     let mut closed_set: HashSet<(i32, i32)> = HashSet::new();
     let mut open_set = BinaryHeap::new();
-    open_set.push(Node { g: 0, f: 0, pos: (0, 0) });
+    open_set.push(Node {
+        g: 0,
+        f: 0,
+        pos: (0, 0),
+    });
 
     while let Some(node) = open_set.pop() {
         if node.pos == end {
@@ -71,11 +77,12 @@ fn astar(grid: &Vec<Vec<u32>>) -> u32 {
             let ny = node.pos.1 + dy;
             if nx >= 0 && ny >= 0 && nx <= end.0 && ny <= end.1 && !closed_set.contains(&(nx, ny)) {
                 let ng = node.g + grid[ny as usize][nx as usize];
-                let h = (end.0 - nx + end.1 - ny)  as u32;
-                open_set.push(Node { 
-                    g: ng, 
-                    f: ng + h, 
-                    pos: (nx, ny) });
+                let h = (end.0 - nx + end.1 - ny) as u32;
+                open_set.push(Node {
+                    g: ng,
+                    f: ng + h,
+                    pos: (nx, ny),
+                });
             }
         }
     }
