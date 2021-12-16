@@ -24,7 +24,7 @@ fn main() -> io::Result<()> {
 fn solve(lines: Vec<String>) -> (usize, usize) {
     let binary = convert_to_binary_from_hex(&lines[0]);
     let mut index = 0;
-    
+
     let temp = parse_packet(&binary, &mut index);
     let part1 = temp.0;
     let part2 = temp.1;
@@ -36,7 +36,7 @@ fn solve(lines: Vec<String>) -> (usize, usize) {
 fn parse_packet(binary: &String, index: &mut usize) -> (usize, usize) {
     let mut ret = (0, 0);
 
-    // the first three bits encode the packet version, 
+    // the first three bits encode the packet version,
     let packet_version = to_decimal(&pop(&binary, index, 3));
     ret.0 += packet_version;
 
@@ -44,9 +44,9 @@ fn parse_packet(binary: &String, index: &mut usize) -> (usize, usize) {
     let packet_type_id = to_decimal(&pop(&binary, index, 3));
 
     let mut sub_values: Vec<usize> = Vec::new();
-    // An operator packet (any packet with a type ID other than 4) contains one or more packets. 
+    // An operator packet (any packet with a type ID other than 4) contains one or more packets.
     if packet_type_id != 4 {
-        // An operator packet can use one of two modes indicated by the bit immediately after the packet header; 
+        // An operator packet can use one of two modes indicated by the bit immediately after the packet header;
         // this is called the length type ID:
         let length_type_id = pop(&binary, index, 1);
         // If the length type ID is 0, then the next 15 bits are a number that represents the total length in bits of the sub-packets contained by this packet.
@@ -72,37 +72,47 @@ fn parse_packet(binary: &String, index: &mut usize) -> (usize, usize) {
 
     ret.1 = match packet_type_id {
         // Packets with type ID 0 are sum packets - their value is the sum of the values of their sub-packets. If they only have a single sub-packet, their value is the value of the sub-packet.
-        0 =>
-            sub_values.iter().sum::<usize>(),
+        0 => sub_values.iter().sum::<usize>(),
         // Packets with type ID 1 are product packets - their value is the result of multiplying together the values of their sub-packets. If they only have a single sub-packet, their value is the value of the sub-packet.
-        1 =>
-            sub_values.iter().product::<usize>(),
+        1 => sub_values.iter().product::<usize>(),
         // Packets with type ID 2 are minimum packets - their value is the minimum of the values of their sub-packets.
-        2 =>
-            *sub_values.iter().min().unwrap(),
+        2 => *sub_values.iter().min().unwrap(),
         // Packets with type ID 3 are maximum packets - their value is the maximum of the values of their sub-packets.
-        3 =>
-            *sub_values.iter().max().unwrap(),
+        3 => *sub_values.iter().max().unwrap(),
         // Packets with type ID 4 represent a literal value
-        4 =>
-            parse_literal(&binary, index),
+        4 => parse_literal(&binary, index),
         // Packets with type ID 5 are greater than packets - their value is 1 if the value of the first sub-packet is greater than the value of the second sub-packet; otherwise, their value is 0. These packets always have exactly two sub-packets.
-        5 =>
-            if sub_values.get(0) > sub_values.get(1) { 1 } else { 0 },
+        5 => {
+            if sub_values.get(0) > sub_values.get(1) {
+                1
+            } else {
+                0
+            }
+        }
         // Packets with type ID 6 are less than packets - their value is 1 if the value of the first sub-packet is less than the value of the second sub-packet; otherwise, their value is 0. These packets always have exactly two sub-packets.
-        6 =>
-            if sub_values.get(0) < sub_values.get(1) { 1 } else { 0 },
+        6 => {
+            if sub_values.get(0) < sub_values.get(1) {
+                1
+            } else {
+                0
+            }
+        }
         // Packets with type ID 7 are equal to packets - their value is 1 if the value of the first sub-packet is equal to the value of the second sub-packet; otherwise, their value is 0. These packets always have exactly two sub-packets.
-        7 =>
-            if sub_values.get(0) == sub_values.get(1) { 1 } else { 0 },
+        7 => {
+            if sub_values.get(0) == sub_values.get(1) {
+                1
+            } else {
+                0
+            }
+        }
         _ => panic!(),
     };
     ret
 }
 
 fn parse_literal(binary: &String, index: &mut usize) -> usize {
-    // Literal value packets encode a single binary number. 
-    // To do this, the binary number is padded with leading zeroes until its length is a multiple of four bits, and then it is broken into groups of four bits. 
+    // Literal value packets encode a single binary number.
+    // To do this, the binary number is padded with leading zeroes until its length is a multiple of four bits, and then it is broken into groups of four bits.
     // Each group is prefixed by a 1 bit except the last group, which is prefixed by a 0 bit. These groups of five bits immediately follow the packet header.
     let mut literal = "".to_string();
     loop {
@@ -117,9 +127,9 @@ fn parse_literal(binary: &String, index: &mut usize) -> usize {
 }
 
 fn pop(s: &String, index: &mut usize, amount: usize) -> String {
-    let ret = &s[*index..*index+amount];
+    let ret = &s[*index..*index + amount];
     *index += amount;
-    ret.to_string()  
+    ret.to_string()
 }
 
 fn to_decimal(binary: &str) -> usize {
