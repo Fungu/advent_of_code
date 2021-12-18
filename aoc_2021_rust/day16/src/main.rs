@@ -82,29 +82,11 @@ fn parse_packet(binary: &String, index: &mut usize) -> (usize, usize) {
         // Packets with type ID 4 represent a literal value
         4 => parse_literal(&binary, index),
         // Packets with type ID 5 are greater than packets - their value is 1 if the value of the first sub-packet is greater than the value of the second sub-packet; otherwise, their value is 0. These packets always have exactly two sub-packets.
-        5 => {
-            if sub_values.get(0) > sub_values.get(1) {
-                1
-            } else {
-                0
-            }
-        }
+        5 => (sub_values.get(0) > sub_values.get(1)) as usize,
         // Packets with type ID 6 are less than packets - their value is 1 if the value of the first sub-packet is less than the value of the second sub-packet; otherwise, their value is 0. These packets always have exactly two sub-packets.
-        6 => {
-            if sub_values.get(0) < sub_values.get(1) {
-                1
-            } else {
-                0
-            }
-        }
+        6 => (sub_values.get(0) < sub_values.get(1)) as usize,
         // Packets with type ID 7 are equal to packets - their value is 1 if the value of the first sub-packet is equal to the value of the second sub-packet; otherwise, their value is 0. These packets always have exactly two sub-packets.
-        7 => {
-            if sub_values.get(0) == sub_values.get(1) {
-                1
-            } else {
-                0
-            }
-        }
+        7 => (sub_values.get(0) == sub_values.get(1)) as usize,
         _ => panic!(),
     };
     ret
