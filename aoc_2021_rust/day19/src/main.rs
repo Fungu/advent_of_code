@@ -48,7 +48,8 @@ fn solve(lines: Vec<String>) -> (usize, i32) {
     let mut volumes: Vec<Volume> = Vec::new();
 
     while !scanners.is_empty() {
-        for i in 0..scanners.len() {
+        let mut i = 0;
+        while i < scanners.len() {
             if match_scanner(
                 &scanners[i],
                 &mut beacons,
@@ -56,8 +57,8 @@ fn solve(lines: Vec<String>) -> (usize, i32) {
                 &mut volumes,
             ) {
                 scanners.remove(i);
-                break;
             } else {
+                i += 1;
             }
         }
     }
