@@ -1,7 +1,8 @@
 use std::{
+    collections::HashSet,
     fs::File,
     io::{self, BufRead, BufReader},
-    time::Instant, collections::HashSet,
+    time::Instant,
 };
 
 fn main() -> io::Result<()> {
@@ -72,7 +73,6 @@ fn solve(lines: Vec<String>) -> (i32, String) {
             next.insert(pos);
         }
         down = next;
-
     }
 
     (part1, "Merry Christmas!".to_string())
