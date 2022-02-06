@@ -1,11 +1,11 @@
 import aoc
 import scanf
 
-def main(inputLines):
+def main(input_lines):
     part1 = 0
     part2 = 0
 
-    for line in inputLines:
+    for line in input_lines:
         low, high, letter, password = scanf.scanf("%d-%d %c: %s", line)
         if low <= password.count(letter) <= high:
             part1 += 1
@@ -14,4 +14,4 @@ def main(inputLines):
     
     return part1, part2
 
-aoc.runLines(main, "day02.txt")
+aoc.run_lines(main, "day02.txt")

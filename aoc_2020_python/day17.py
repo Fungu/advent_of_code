@@ -2,21 +2,21 @@ import aoc
 import gameoflife
 import itertools
 
-def main(inputLines):
-    neighbors3d, neighbors4d = getNeighborTypes()
-    state = initState(inputLines, neighbors4d)
-    remainActiveWhen = lambda adjacentCount: adjacentCount in [2, 3]
-    becomeActiveWhen = lambda adjacentCount: adjacentCount == 3
+def main(input_lines):
+    neighbors3d, neighbors4d = get_neighbor_types()
+    state = init_state(input_lines)
+    remain_active_when = lambda adjacent_count: adjacent_count in [2, 3]
+    become_active_when = lambda adjacent_count: adjacent_count == 3
 
-    state1 = gameoflife.runSimulation(state, 6, neighbors3d, remainActiveWhen, becomeActiveWhen)
-    part1 = gameoflife.countActive(state1)
+    state1 = gameoflife.run_simulation(state, 6, neighbors3d, remain_active_when, become_active_when)
+    part1 = gameoflife.count_active(state1)
 
-    state2 = gameoflife.runSimulation(state, 6, neighbors4d, remainActiveWhen, becomeActiveWhen)
-    part2 = gameoflife.countActive(state2)
+    state2 = gameoflife.run_simulation(state, 6, neighbors4d, remain_active_when, become_active_when)
+    part2 = gameoflife.count_active(state2)
 
     return part1, part2
 
-def getNeighborTypes():
+def get_neighbor_types():
     directions = [-1, 0, 1]
     neighbors3d = list(itertools.product(directions, directions, directions, [0]))
     neighbors4d = list(itertools.product(directions, directions, directions, directions))
@@ -24,11 +24,11 @@ def getNeighborTypes():
     neighbors4d.remove((0, 0, 0, 0))
     return neighbors3d, neighbors4d
 
-def initState(inputLines, neighborsType):
+def init_state(input_lines):
     state = {}
-    for row, line in enumerate(inputLines):
+    for row, line in enumerate(input_lines):
         for col, char in enumerate(line):
             state[(row, col, 0, 0)] = char == "#"
     return state
 
-aoc.runLines(main, "day17.txt")
+aoc.run_lines(main, "day17.txt")

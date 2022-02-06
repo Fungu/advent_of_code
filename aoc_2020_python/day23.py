@@ -5,70 +5,70 @@ class Node:
        self.data = data
        self.next = None
  
-def main(inputBlob):
-    part1, _ = play(inputBlob, 0, 100)
-    _, part2 = play(inputBlob, 1000000, 10000000)
+def main(input_blob):
+    part1, _ = play(input_blob, 0, 100)
+    _, part2 = play(input_blob, 1000000, 10000000)
 
     return part1, part2
 
-def play(inputBlob, extraCups, iterations):
-    nrOfCups = max(len(inputBlob), extraCups)
-    firstNode = None
-    lastNode = None
-    cupDict = {}
-    for a in inputBlob:
+def play(input_blob, extra_cups, iterations):
+    nr_of_cups = max(len(input_blob), extra_cups)
+    first_node = None
+    last_node = None
+    cup_dict = {}
+    for a in input_blob:
         node = Node(int(a))
-        if firstNode == None:
-            firstNode = node
-        if lastNode != None:
-            lastNode.next = node
-        cupDict[int(a)] = node
-        lastNode = node
-    for a in range(max([int(b) for b in inputBlob]) + 1, extraCups + 1):
+        if first_node == None:
+            first_node = node
+        if last_node != None:
+            last_node.next = node
+        cup_dict[int(a)] = node
+        last_node = node
+    for a in range(max([int(b) for b in input_blob]) + 1, extra_cups + 1):
         node = Node(a)
-        cupDict[a] = node
-        lastNode.next = node
-        lastNode = node
-    currentCup = firstNode
-    lastNode.next = firstNode
+        cup_dict[a] = node
+        last_node.next = node
+        last_node = node
+    current_cup = first_node
+    last_node.next = first_node
 
     for _ in range(iterations):
         pickup = []
-        c = currentCup.next
+        c = current_cup.next
         for _ in range(3):
             pickup.append(c)
             c = c.next
-        currentCup.next = pickup[-1].next
+        current_cup.next = pickup[-1].next
         
-        destination = currentCup.data - 1
+        destination = current_cup.data - 1
         if destination < 1:
-            destination += nrOfCups
+            destination += nr_of_cups
         while True:
-            isDestinationInPickup = False
+            is_destination_in_pickup = False
             for cup in pickup:
                 if cup.data == destination:
-                    isDestinationInPickup = True
-            if isDestinationInPickup:
+                    is_destination_in_pickup = True
+            if is_destination_in_pickup:
                 destination -= 1
                 if destination < 1:
-                    destination += nrOfCups
+                    destination += nr_of_cups
             else:
                 break
         
-        destinationCup = cupDict[destination]
-        pickup[2].next = destinationCup.next
-        destinationCup.next = pickup[0]
+        destination_cup = cup_dict[destination]
+        pickup[2].next = destination_cup.next
+        destination_cup.next = pickup[0]
 
-        currentCup = currentCup.next
+        current_cup = current_cup.next
     
     part1 = ""
-    cup = cupDict[1].next
+    cup = cup_dict[1].next
     while cup.data != 1:
         part1 += str(cup.data)
         cup = cup.next
     
-    part2 = cupDict[1].next.data * cupDict[1].next.next.data 
+    part2 = cup_dict[1].next.data * cup_dict[1].next.next.data 
     
     return part1, part2
 
-aoc.runRaw(main, "day23.txt")
+aoc.run_raw(main, "day23.txt")

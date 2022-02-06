@@ -1,7 +1,7 @@
 import aoc
 
-def main(inputLines):
-    adapters = [int(line) for line in inputLines]
+def main(input_lines):
+    adapters = [int(line) for line in input_lines]
     adapters.append(0)
     adapters = sorted(adapters)
     adapters.append(adapters[-1] + 3)
@@ -11,12 +11,12 @@ def main(inputLines):
         differences[adapters[i + 1] - adapters[i] - 1] += 1
     part1 = differences[0] * differences[2]
     
-    part2 = getCombinationsFrom(0, adapters, {})
+    part2 = get_combinations_from(0, adapters, {})
 
     return part1, part2
 
 # Dynamic programming
-def getCombinationsFrom(index, adapters, memory):
+def get_combinations_from(index, adapters, memory):
     if index + 1 == len(adapters):
         return 1
     if index in memory:
@@ -24,8 +24,8 @@ def getCombinationsFrom(index, adapters, memory):
     ret = 0
     for i in range(index + 1, index + 4):
         if i < len(adapters) and adapters[i] - adapters[index] <= 3:
-            ret += getCombinationsFrom(i, adapters, memory)
+            ret += get_combinations_from(i, adapters, memory)
     memory[index] = ret
     return ret
 
-aoc.runLines(main, "day10.txt")
+aoc.run_lines(main, "day10.txt")

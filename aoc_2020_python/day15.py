@@ -1,26 +1,26 @@
 import aoc
 
-def main(rawInput):
-    inputList = [int(a) for a in rawInput.split(",")]
+def main(raw_input):
+    input_list = [int(a) for a in raw_input.split(",")]
     
-    part1 = memoryGame(inputList, 2020)
-    part2 = memoryGame(inputList, 30000000)
+    part1 = memory_game(input_list, 2020)
+    part2 = memory_game(input_list, 30000000)
 
     return part1, part2
 
 # Van Eck's sequence
-def memoryGame(inputList, iterations):
-    spokenNumbers = {}
-    for i in range(len(inputList)):
-        lastNumber = inputList[i]
-        spokenNumbers[lastNumber] = i
-    for i in range(len(inputList), iterations):
-        if lastNumber in spokenNumbers:
-            thisNumber = i - 1 - spokenNumbers[lastNumber]
+def memory_game(input_list, iterations):
+    spoken_numbers = {}
+    for i in range(len(input_list)):
+        last_number = input_list[i]
+        spoken_numbers[last_number] = i
+    for i in range(len(input_list), iterations):
+        if last_number in spoken_numbers:
+            this_number = i - 1 - spoken_numbers[last_number]
         else:
-            thisNumber = 0
-        spokenNumbers[lastNumber] = i - 1
-        lastNumber = thisNumber
-    return lastNumber
+            this_number = 0
+        spoken_numbers[last_number] = i - 1
+        last_number = this_number
+    return last_number
 
-aoc.runRaw(main, "day15.txt")
+aoc.run_raw(main, "day15.txt")

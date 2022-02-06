@@ -1,21 +1,21 @@
 import aoc
 import re
 
-def main(rawInput):
-    passportList = [{pair.split(":")[0] : pair.split(":")[1] for pair in passport.replace("\n", " ").split(" ")} for passport in rawInput.split("\n\n")]
+def main(raw_input):
+    passport_list = [{pair.split(":")[0] : pair.split(":")[1] for pair in passport.replace("\n", " ").split(" ")} for passport in raw_input.split("\n\n")]
     
-    passportList = list(filter(hasRequiredFields, passportList))
-    part1 = len(passportList)
+    passport_list = list(filter(has_required_fields, passport_list))
+    part1 = len(passport_list)
 
-    passportList = list(filter(isValid, passportList))
-    part2 = len(passportList)
+    passport_list = list(filter(is_valid, passport_list))
+    part2 = len(passport_list)
 
     return part1, part2
 
-def hasRequiredFields(passport):
+def has_required_fields(passport):
     return all((field in passport) for field in ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"])
 
-def isValid(passport):
+def is_valid(passport):
     #byr (Birth Year) - four digits; at least 1920 and at most 2002.
     if not (1920 <= int(passport["byr"]) <= 2002):
         return False
@@ -48,4 +48,4 @@ def isValid(passport):
     #cid (Country ID) - ignored, missing or not.
     return True
 
-aoc.runRaw(main, "day04.txt")
+aoc.run_raw(main, "day04.txt")

@@ -1,60 +1,60 @@
 import aoc
 import operator
 
-def main(inputLines):
+def main(input_lines):
     precedence = { "(": 0, "*": 1, "+": 1 }
     
     part1 = 0
-    for line in inputLines:
-        part1 += evaluatePostfix(getPostfix(line, precedence))
+    for line in input_lines:
+        part1 += evaluate_postfix(get_postfix(line, precedence))
     
     part2 = 0
     precedence["+"] = 2
-    for line in inputLines:
-        part2 += evaluatePostfix(getPostfix(line, precedence))
+    for line in input_lines:
+        part2 += evaluate_postfix(get_postfix(line, precedence))
     
     return part1, part2
 
-def getPostfix(line, precedence):
-    operatorStack = []
+def get_postfix(line, precedence):
+    operator_stack = []
     output = []
-    tokenList = line.replace("(", " ( ").replace(")", " ) ").split()
+    token_list = line.replace("(", " ( ").replace(")", " ) ").split()
 
-    for token in tokenList:
+    for token in token_list:
         if token.isnumeric():
             output.append(token)
         
         elif token == "(":
-            operatorStack.append(token)
+            operator_stack.append(token)
         
         elif token == ")":
-            while operatorStack[-1] != "(":
-                output.append(operatorStack.pop())
-            operatorStack.pop()
+            while operator_stack[-1] != "(":
+                output.append(operator_stack.pop())
+            operator_stack.pop()
         
         elif token in "+*":
-            while operatorStack and precedence[operatorStack[-1]] >= precedence[token]:
-                operator = operatorStack.pop()
+            while operator_stack and precedence[operator_stack[-1]] >= precedence[token]:
+                operator = operator_stack.pop()
                 output.append(operator)
-            operatorStack.append(token)
+            operator_stack.append(token)
     
-    while operatorStack:
-        output.append(operatorStack.pop())
+    while operator_stack:
+        output.append(operator_stack.pop())
 
     return output
 
-def evaluatePostfix(expression):
+def evaluate_postfix(expression):
     operators = { "+": operator.add, "*": operator.mul }
-    numberStack = []
+    number_stack = []
 
     for token in expression:
         if token.isnumeric():
-            numberStack.append(int(token))
+            number_stack.append(int(token))
         
         else:
-            result = operators[token](numberStack.pop(), numberStack.pop())
-            numberStack.append(result)
+            result = operators[token](number_stack.pop(), number_stack.pop())
+            number_stack.append(result)
     
-    return numberStack.pop()
+    return number_stack.pop()
 
-aoc.runLines(main, "day18.txt")
+aoc.run_lines(main, "day18.txt")

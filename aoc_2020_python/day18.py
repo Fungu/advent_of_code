@@ -1,15 +1,15 @@
 import aoc
 
-def main(inputLines):
+def main(input_lines):
     part1 = 0
     part2 = 0
-    for line in inputLines:
-        part1 += evaluate(getExpression(line), False)
-        part2 += evaluate(getExpression(line), True)
+    for line in input_lines:
+        part1 += evaluate(get_expression(line), False)
+        part2 += evaluate(get_expression(line), True)
     
     return part1, part2
 
-def getExpression(line):
+def get_expression(line):
     expression = []
     while line:
         value = line[0].strip()
@@ -23,7 +23,7 @@ def getExpression(line):
             expression.append(value)
     return expression
 
-def evaluate(expression, additionPriority = False):
+def evaluate(expression, addition_priority = False):
     if "(" in expression:
         start = expression.index("(")
         depth = 1
@@ -33,12 +33,12 @@ def evaluate(expression, additionPriority = False):
             elif expression[i] == ")":
                 depth -= 1
                 if depth == 0:
-                    content = evaluate(expression[start + 1 : i], additionPriority)
+                    content = evaluate(expression[start + 1 : i], addition_priority)
                     left = expression[: start]
                     right = expression[i + 1 :]
-                    return evaluate(left + [content] + right, additionPriority)
+                    return evaluate(left + [content] + right, addition_priority)
     elif len(expression) > 1:
-        if not additionPriority:
+        if not addition_priority:
             index = 1
         else:
             if "+" in expression:
@@ -51,8 +51,8 @@ def evaluate(expression, additionPriority = False):
             content = expression[index - 1] * expression[index + 1]
         left = expression[: max(0, index - 1)]
         right = expression[index + 2 :]
-        return evaluate(left + [content] + right, additionPriority)
+        return evaluate(left + [content] + right, addition_priority)
     else:
         return expression[0]
 
-aoc.runLines(main, "day18.txt")
+aoc.run_lines(main, "day18.txt")

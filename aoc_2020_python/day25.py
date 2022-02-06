@@ -1,17 +1,17 @@
 import aoc
 
-def main(inputLines):
-    doorPublicKey = int(inputLines[0])
-    cardPublicKey = int(inputLines[1])
+def main(input_lines):
+    door_public_key = int(input_lines[0])
+    card_public_key = int(input_lines[1])
 
-    doorKeyCandidate = 1
-    encryptionKey = 1
-    while doorKeyCandidate != doorPublicKey:
-        encryptionKey *= cardPublicKey
-        encryptionKey = encryptionKey % 20201227
-        doorKeyCandidate *= 7
-        doorKeyCandidate = doorKeyCandidate % 20201227
+    door_key_candidate = 1
+    encryption_key = 1
+    while door_key_candidate != door_public_key:
+        encryption_key *= card_public_key
+        encryption_key = encryption_key % 20201227
+        door_key_candidate *= 7
+        door_key_candidate = door_key_candidate % 20201227
 
-    return encryptionKey, "Pay 49 stars"
+    return encryption_key, "Pay 49 stars"
 
-aoc.runLines(main, "day25.txt")
+aoc.run_lines(main, "day25.txt")

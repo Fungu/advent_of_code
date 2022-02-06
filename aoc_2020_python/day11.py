@@ -1,67 +1,67 @@
 import aoc
 
-def main(inputLines):
-    everyDirection = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
-    height = len(inputLines)
-    width = len(inputLines[0].strip())
+def main(input_lines):
+    every_direction = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+    height = len(input_lines)
+    width = len(input_lines[0].strip())
 
     state = {}
-    adjacentSeats = {}
-    seenSeats = {}
+    adjacent_seats = {}
+    seen_seats = {}
     for row in range(height):
         for col in range(width):
-            if inputLines[row][col] != ".":
-                adjacentSeats[(row, col)] = []
-                seenSeats[(row, col)] = []
-                state[(row, col)] = inputLines[row][col] == "#"
-                for dRow, dCol in everyDirection:
-                    rowPos = row + dRow
-                    colPos = col + dCol
-                    directNeighbor = True
-                    while 0 <= rowPos < height and 0 <= colPos < width:
-                        if inputLines[rowPos][colPos] != ".":
-                            if directNeighbor:
-                                adjacentSeats[(row, col)].append((rowPos, colPos))
-                            seenSeats[(row, col)].append((rowPos, colPos))
+            if input_lines[row][col] != ".":
+                adjacent_seats[(row, col)] = []
+                seen_seats[(row, col)] = []
+                state[(row, col)] = input_lines[row][col] == "#"
+                for d_row, d_col in every_direction:
+                    row_pos = row + d_row
+                    col_pos = col + d_col
+                    direct_neighbor = True
+                    while 0 <= row_pos < height and 0 <= col_pos < width:
+                        if input_lines[row_pos][col_pos] != ".":
+                            if direct_neighbor:
+                                adjacent_seats[(row, col)].append((row_pos, col_pos))
+                            seen_seats[(row, col)].append((row_pos, col_pos))
                             break
-                        directNeighbor = False
-                        rowPos += dRow
-                        colPos += dCol
+                        direct_neighbor = False
+                        row_pos += d_row
+                        col_pos += d_col
 
-    part1 = simulateUntilStable(state, adjacentSeats, maxNeighbors=4)
-    part2 = simulateUntilStable(state, seenSeats, maxNeighbors=5)
+    part1 = simulate_until_stable(state, adjacent_seats, max_neighbors=4)
+    part2 = simulate_until_stable(state, seen_seats, max_neighbors=5)
     
     return part1, part2
 
-def simulateUntilStable(state, adjacentSeats, maxNeighbors):
-    stateCopy = state.copy()
-    resultChanged = True
-    while resultChanged:
-        stateCopy, resultChanged = simulate(stateCopy, adjacentSeats, maxNeighbors)
+def simulate_until_stable(state, adjacent_seats, max_neighbors):
+    state_copy = state.copy()
+    result_changed = True
+    while result_changed:
+        state_copy, result_changed = simulate(state_copy, adjacent_seats, max_neighbors)
     ret = 0
-    for seat in stateCopy:
-        if stateCopy[seat]:
+    for seat in state_copy:
+        if state_copy[seat]:
             ret += 1
     return ret
 
-def simulate(state, adjacentSeats, maxNeighbors):
+def simulate(state, adjacent_seats, max_neighbors):
     result = {}
-    resultChanged = False
+    result_changed = False
 
     for key in state.keys():
         neighbors = 0
-        for seat in adjacentSeats[key]:
+        for seat in adjacent_seats[key]:
             if state[seat]:
                 neighbors += 1
-        if state[key] and neighbors >= maxNeighbors:
+        if state[key] and neighbors >= max_neighbors:
             result[key] = False
-            resultChanged = True
+            result_changed = True
         elif not state[key] and neighbors == 0:
             result[key] = True
-            resultChanged = True
+            result_changed = True
         else:
             result[key] = state[key]
 
-    return result, resultChanged
+    return result, result_changed
 
-aoc.runLines(main, "day11.txt")
+aoc.run_lines(main, "day11.txt")

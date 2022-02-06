@@ -1,12 +1,12 @@
 import aoc
 
-def main(inputLines):
-    part1 = followInstructions(inputLines, 1 + 0j, True)
-    part2 = followInstructions(inputLines, 10 + 1j, False)
+def main(input_lines):
+    part1 = follow_instructions(input_lines, 1 + 0j, True)
+    part2 = follow_instructions(input_lines, 10 + 1j, False)
     
     return part1, part2
 
-def followInstructions(instructions, speed, part1):
+def follow_instructions(instructions, speed, part1):
     # Complex numbers are  used for position and rotation. The real part represents East and West. The imaginary part represents North and South.
     # To rotate a direction, just multiply it with the corresponding value in rotations.
     # Example: directions["E"] * rotations["L"] == directions["N"]
@@ -35,4 +35,4 @@ def followInstructions(instructions, speed, part1):
     
     return int(abs(position.real) + abs(position.imag))
 
-aoc.runLines(main, "day12.txt")
+aoc.run_lines(main, "day12.txt")

@@ -1,37 +1,37 @@
 import aoc
 import functools
 
-def main(inputLines):
-    foodList = []
-    for line in inputLines:
-        valueList, allergens = line.split(" (contains")
-        foodList.append((valueList.split(), allergens.strip().replace(")", "").split(", ")))
+def main(input_lines):
+    food_list = []
+    for line in input_lines:
+        value_list, allergens = line.split(" (contains")
+        food_list.append((value_list.split(), allergens.strip().replace(")", "").split(", ")))
     
-    equationSystem = {}
-    for food in foodList:
-        valueList, variableList = food
-        for variable in variableList:
-            if variable in equationSystem:
-                equationSystem[variable] = list(set(equationSystem[variable]) & set(valueList))
+    equation_system = {}
+    for food in food_list:
+        value_list, variable_list = food
+        for variable in variable_list:
+            if variable in equation_system:
+                equation_system[variable] = list(set(equation_system[variable]) & set(value_list))
             else:
-                equationSystem[variable] = valueList
+                equation_system[variable] = value_list
 
-    allSeenValues = functools.reduce(lambda a, b: list(set(a) | set(b)), equationSystem.values())
+    all_seen_values = functools.reduce(lambda a, b: list(set(a) | set(b)), equation_system.values())
     
-    part1 = sum([len(list(filter(lambda value: value not in allSeenValues, valueList))) for valueList, _ in foodList])
+    part1 = sum([len(list(filter(lambda value: value not in all_seen_values, value_list))) for value_list, _ in food_list])
 
     finished = False
     while not finished:
         finished = True
-        for variable, valueList in equationSystem.items():
-            if len(valueList) == 1:
-                for otherVariable, otherValueList in equationSystem.items():
-                    if variable != otherVariable and valueList[0] in otherValueList:
-                        otherValueList.remove(valueList[0])
+        for variable, value_list in equation_system.items():
+            if len(value_list) == 1:
+                for other_variable, other_value_list in equation_system.items():
+                    if variable != other_variable and value_list[0] in other_value_list:
+                        other_value_list.remove(value_list[0])
                         finished = False
 
-    part2 = ",".join([equationSystem[a][0] for a in sorted(equationSystem.keys())])
+    part2 = ",".join([equation_system[a][0] for a in sorted(equation_system.keys())])
     
     return part1, part2
 
-aoc.runLines(main, "day21.txt")
+aoc.run_lines(main, "day21.txt")

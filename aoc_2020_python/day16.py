@@ -1,49 +1,49 @@
 import aoc
 import scanf
 
-def main(inputBlob):
-    ruleDict = {}
-    for line in inputBlob.split("\n\n")[0].strip().splitlines():
+def main(raw_input):
+    rule_dict = {}
+    for line in raw_input.split("\n\n")[0].strip().splitlines():
         name, a, b, c, d = scanf.scanf("%s:%d-%dor%d-%d", line.replace(" ", ""))
-        ruleDict[name] = [a, b, c, d]
-    myTicket = [int(a) for a in scanf.scanf("your ticket:\n%s", inputBlob)[0].split(",")]
-    nearbyTicketList = [[int(a) for a in b.split(",")] for b in inputBlob.split("nearby tickets:")[1].strip().splitlines()]
-    validTicketList = [myTicket]
+        rule_dict[name] = [a, b, c, d]
+    my_ticket = [int(a) for a in scanf.scanf("your ticket:\n%s", raw_input)[0].split(",")]
+    nearby_ticket_list = [[int(a) for a in b.split(",")] for b in raw_input.split("nearby tickets:")[1].strip().splitlines()]
+    valid_ticket_list = [my_ticket]
     
     part1 = 0
-    for ticket in nearbyTicketList:
-        matchTicket = True
+    for ticket in nearby_ticket_list:
+        match_ticket = True
         for value in ticket:
-            if not any([match(rule, value) for rule in ruleDict.values()]):
+            if not any([match(rule, value) for rule in rule_dict.values()]):
                 part1 += value
-                matchTicket = False
-        if matchTicket:
-            validTicketList.append(ticket)
+                match_ticket = False
+        if match_ticket:
+            valid_ticket_list.append(ticket)
 
-    ticketMatchDict = {}
-    for name, rule in ruleDict.items():
-        ticketMatchDict[name] = []
-        for index in range(len(myTicket)):
-            if all([match(rule, ticket[index]) for ticket in validTicketList]):
-                ticketMatchDict[name].append(index)
+    ticket_match_dict = {}
+    for name, rule in rule_dict.items():
+        ticket_match_dict[name] = []
+        for index in range(len(my_ticket)):
+            if all([match(rule, ticket[index]) for ticket in valid_ticket_list]):
+                ticket_match_dict[name].append(index)
     
-    finishedFields = set()
-    while len(finishedFields) != len(ticketMatchDict):
-        for key, value in ticketMatchDict.items():
-            if len(value) == 1 and key not in finishedFields:
-                finishedFields.add(key)
-                for otherKey, otherValue in ticketMatchDict.items():
-                    if key != otherKey and value[0] in otherValue:
-                        otherValue.remove(value[0])
+    finished_fields = set()
+    while len(finished_fields) != len(ticket_match_dict):
+        for key, value in ticket_match_dict.items():
+            if len(value) == 1 and key not in finished_fields:
+                finished_fields.add(key)
+                for other_key, other_value in ticket_match_dict.items():
+                    if key != other_key and value[0] in other_value:
+                        other_value.remove(value[0])
     
     part2 = 1
-    for key, value in ticketMatchDict.items():
+    for key, value in ticket_match_dict.items():
         if key.startswith("departure"):
-            part2 *= myTicket[value[0]]
+            part2 *= my_ticket[value[0]]
 
     return part1, part2
 
 def match(rule, value):
     return rule[0] <= value <= rule[1] or rule[2] <= value <= rule[3]
 
-aoc.runRaw(main, "day16.txt")
+aoc.run_raw(main, "day16.txt")

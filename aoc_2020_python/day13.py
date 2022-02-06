@@ -1,25 +1,25 @@
 import aoc
 import math
 
-def main(inputLines):
-    earliestDeparture = int(inputLines[0])
-    busList = [[i, int(bus)] for i, bus in enumerate(inputLines[1].split(",")) if bus != "x"]
+def main(input_lines):
+    earliest_departure = int(input_lines[0])
+    bus_list = [[i, int(bus)] for i, bus in enumerate(input_lines[1].split(",")) if bus != "x"]
 
-    bestTime = None
-    for _, bus in busList:
-        nextTime = math.ceil(earliestDeparture / bus) * bus
-        if bestTime == None or nextTime < bestTime:
-            bestTime = nextTime
-            bestBus = bus
-    part1 = int(bestBus) * (bestTime - earliestDeparture)
+    best_time = None
+    for _, bus in bus_list:
+        next_time = math.ceil(earliest_departure / bus) * bus
+        if best_time == None or next_time < best_time:
+            best_time = next_time
+            best_bus = bus
+    part1 = int(best_bus) * (best_time - earliest_departure)
 
-    increment = busList[0][1]
+    increment = bus_list[0][1]
     part2 = 0
-    for i, bus in busList[1:]:
+    for i, bus in bus_list[1:]:
         while (part2 + i) % bus != 0:
             part2 += increment
         increment *= bus
 
     return part1, part2
 
-aoc.runLines(main, "day13.txt")
+aoc.run_lines(main, "day13.txt")
