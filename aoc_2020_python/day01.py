@@ -1,7 +1,7 @@
 import aoc
 
-def main(inputLines):
-    values = sorted([int(val) for val in inputLines])
+def main(input_lines: list):
+    values = sorted([int(val) for val in input_lines])
     
     combined = {}
     for a in range(len(values)):
@@ -17,4 +17,4 @@ def main(inputLines):
 
     return part1, part2
 
-aoc.runLines(main, "day01.txt")
+aoc.run_lines(main, "day01.txt")

@@ -2,36 +2,36 @@ import aoc
 import re
 import colorama
 
-def main(inputBlob):
-    tileDict = {}
-    for rawTile in inputBlob.split("\n\n"):
-        lines = rawTile.splitlines()
-        tileDict[lines[0].split()[1].replace(":", "")] = lines[1:]
+def main(input_blob):
+    tile_dict = {}
+    for raw_tile in input_blob.split("\n\n"):
+        lines = raw_tile.splitlines()
+        tile_dict[lines[0].split()[1].replace(":", "")] = lines[1:]
 
-    assembledGrid, tilePositions = assemble(tileDict)
+    assembled_grid, tile_positions = assemble(tile_dict)
     
-    minX = min([x for x, y in tilePositions.keys()])
-    maxX = max([x for x, y in tilePositions.keys()])
-    minY = min([y for x, y in tilePositions.keys()])
-    maxY = max([y for x, y in tilePositions.keys()])
-    part1 = int(tilePositions[(minX, minY)]) * int(tilePositions[(maxX, minY)]) * int(tilePositions[(minX, maxY)]) * int(tilePositions[(maxX, maxY)])
+    min_x = min([x for x, y in tile_positions.keys()])
+    max_x = max([x for x, y in tile_positions.keys()])
+    min_y = min([y for x, y in tile_positions.keys()])
+    max_y = max([y for x, y in tile_positions.keys()])
+    part1 = int(tile_positions[(min_x, min_y)]) * int(tile_positions[(max_x, min_y)]) * int(tile_positions[(min_x, max_y)]) * int(tile_positions[(max_x, max_y)])
 
     for _ in range(4):
         for flipping in [False, True]:
-            found, roughness = findSeaMonsters(assembledGrid)
+            found, roughness = find_sea_monsters(assembled_grid)
             if found:
                 part2 = roughness
                 break
             if flipping:
-                assembledGrid = flip(assembledGrid, True)
+                assembled_grid = flip(assembled_grid, True)
             else:
-                assembledGrid = rotate(assembledGrid, 1)
+                assembled_grid = rotate(assembled_grid, 1)
     
-    #printGrid(assembledGrid)
+    #print_grid(assembled_grid)
 
     return part1, part2
 
-def getEdges(tile):
+def get_edges(tile):
     """0->up, 1->left, 2->down, 3->right"""
 
     edges = []
@@ -46,109 +46,109 @@ def rotate(tile, rotation):
     """rotation: 0->default, 1->90deg ccw, 2->180deg ccw, 3->270deg ccw"""
 
     for _ in range(rotation):
-        newTile = []
+        new_tile = []
         for column in range(len(tile[0])):
-            newTile.append("".join([tile[i][len(tile[0]) - column - 1] for i in range(len(tile))]))
-        tile = newTile
+            new_tile.append("".join([tile[i][len(tile[0]) - column - 1] for i in range(len(tile))]))
+        tile = new_tile
     return tile
 
 def flip(tile, horizontal):
     if horizontal:
-        newTile = []
+        new_tile = []
         for line in tile:
-            newTile.append(line[::-1])
+            new_tile.append(line[::-1])
     else:
-        newTile = tile[::-1]
-    return newTile
+        new_tile = tile[::-1]
+    return new_tile
 
-def assemble(tileDict):
-    startTileId = list(tileDict.keys())[0]
-    directionDict = {0: (0, -1), 1: (-1, 0), 2: (0, 1), 3: (1, 0)}
+def assemble(tile_dict):
+    start_tile_id = list(tile_dict.keys())[0]
+    direction_dict = {0: (0, -1), 1: (-1, 0), 2: (0, 1), 3: (1, 0)}
 
-    # key=position, value=tileId
-    tilePositions = {}
-    tilePositions[(0, 0)] = startTileId
-    openSet = set()
-    openSet.add((0, 0))
-    while openSet:
-        currentPosition = openSet.pop()
-        currentTileId = tilePositions[currentPosition]
-        currentEdges = getEdges(tileDict[currentTileId])
-        for otherId, otherTile in tileDict.items():
-            if otherId in tilePositions.values():
+    # key=position, value=tile_id
+    tile_positions = {}
+    tile_positions[(0, 0)] = start_tile_id
+    open_set = set()
+    open_set.add((0, 0))
+    while open_set:
+        current_position = open_set.pop()
+        current_tile_id = tile_positions[current_position]
+        current_edges = get_edges(tile_dict[current_tile_id])
+        for other_id, other_tile in tile_dict.items():
+            if other_id in tile_positions.values():
                 continue
-            otherEdges = getEdges(otherTile)
-            for direction, edgeA in enumerate(currentEdges):
-                for otherDirection, edgeB in enumerate(otherEdges):
+            other_edges = get_edges(other_tile)
+            for direction, edge_a in enumerate(current_edges):
+                for other_direction, edge_b in enumerate(other_edges):
                     match = False
-                    needsFlip = False
-                    if edgeA == edgeB:
+                    needs_flip = False
+                    if edge_a == edge_b:
                         match = True
-                        needsFlip = True
-                    if edgeA == edgeB[::-1]:
+                        needs_flip = True
+                    if edge_a == edge_b[::-1]:
                         match = True
                     if match:
-                        dX, dY = directionDict[direction]
-                        position = (currentPosition[0] + dX, currentPosition[1] + dY)
-                        if position not in tilePositions:
-                            relativeRotation = direction - otherDirection + 2
-                            if relativeRotation < 0:
-                                relativeRotation += 4
-                            otherTile = rotate(otherTile, relativeRotation)
-                            if needsFlip:
-                                otherTile = flip(otherTile, direction in [0, 2])
-                            tileDict[otherId] = otherTile
-                            tilePositions[position] = otherId
-                            openSet.add(position)
+                        d_x, d_y = direction_dict[direction]
+                        position = (current_position[0] + d_x, current_position[1] + d_y)
+                        if position not in tile_positions:
+                            relative_rotation = direction - other_direction + 2
+                            if relative_rotation < 0:
+                                relative_rotation += 4
+                            other_tile = rotate(other_tile, relative_rotation)
+                            if needs_flip:
+                                other_tile = flip(other_tile, direction in [0, 2])
+                            tile_dict[other_id] = other_tile
+                            tile_positions[position] = other_id
+                            open_set.add(position)
     
-    minX = min([x for x, y in tilePositions.keys()])
-    maxX = max([x for x, y in tilePositions.keys()])
-    minY = min([y for x, y in tilePositions.keys()])
-    maxY = max([y for x, y in tilePositions.keys()])
+    min_x = min([x for x, y in tile_positions.keys()])
+    max_x = max([x for x, y in tile_positions.keys()])
+    min_y = min([y for x, y in tile_positions.keys()])
+    max_y = max([y for x, y in tile_positions.keys()])
 
-    assembledGrid = []
-    for y in range(minY, maxY + 1):
-        for innerY in range(1, len(tileDict[startTileId]) - 1):
+    assembled_grid = []
+    for y in range(min_y, max_y + 1):
+        for inner_y in range(1, len(tile_dict[start_tile_id]) - 1):
             line = ""
-            for x in range(minX, maxX + 1):
-                otherTile = tileDict[tilePositions[(x, y)]]
-                line += otherTile[innerY][1:-1]
-            assembledGrid.append(line)
-    assembledGrid = flip(assembledGrid, False)
-    return assembledGrid, tilePositions
+            for x in range(min_x, max_x + 1):
+                other_tile = tile_dict[tile_positions[(x, y)]]
+                line += other_tile[inner_y][1:-1]
+            assembled_grid.append(line)
+    assembled_grid = flip(assembled_grid, False)
+    return assembled_grid, tile_positions
 
-def findSeaMonsters(grid):
-    seaMonster = [
+def find_sea_monsters(grid):
+    sea_monster = [
         "                  # ",
         "#    ##    ##    ###",
         " #  #  #  #  #  #   "
     ]
     
-    seaMonsterMatch = []
-    seaMonsterMatch.append(re.compile("(?=(" + seaMonster[0].replace(" ", ".") + "))"))
-    seaMonsterMatch.append(re.compile("(?=(" + seaMonster[1].replace(" ", ".") + "))"))
-    seaMonsterMatch.append(re.compile("(?=(" + seaMonster[2].replace(" ", ".") + "))"))
+    sea_monster_match = []
+    sea_monster_match.append(re.compile("(?=(" + sea_monster[0].replace(" ", ".") + "))"))
+    sea_monster_match.append(re.compile("(?=(" + sea_monster[1].replace(" ", ".") + "))"))
+    sea_monster_match.append(re.compile("(?=(" + sea_monster[2].replace(" ", ".") + "))"))
 
-    seaMonsterCount = 0
-    for row in range(len(grid) - len(seaMonsterMatch) + 1):
+    sea_monster_count = 0
+    for row in range(len(grid) - len(sea_monster_match) + 1):
         matches = []
-        for patternIndex in range(len(seaMonsterMatch)):
-            innerMatches = []
-            for m in seaMonsterMatch[patternIndex].findall(grid[row + patternIndex]):
-                innerMatches.append(grid[row + patternIndex].index(m))
-            matches.append(innerMatches)
-        for matchIndex in matches[1]:
-            if matchIndex in matches[0] and matchIndex in matches[2]:
-                seaMonsterCount += 1
-                for monsterIndex, monsterRow in enumerate(seaMonster):
-                    for monsterCharIndex, monsterChar in enumerate(monsterRow):
-                        if monsterChar == "#":
-                            grid[row + monsterIndex] = grid[row + monsterIndex][: matchIndex + monsterCharIndex] + "O" + grid[row + monsterIndex][matchIndex + monsterCharIndex + 1 :]
+        for pattern_index in range(len(sea_monster_match)):
+            inner_matches = []
+            for m in sea_monster_match[pattern_index].findall(grid[row + pattern_index]):
+                inner_matches.append(grid[row + pattern_index].index(m))
+            matches.append(inner_matches)
+        for match_index in matches[1]:
+            if match_index in matches[0] and match_index in matches[2]:
+                sea_monster_count += 1
+                for monster_index, monster_row in enumerate(sea_monster):
+                    for monster_char_index, monster_char in enumerate(monster_row):
+                        if monster_char == "#":
+                            grid[row + monster_index] = grid[row + monster_index][: match_index + monster_char_index] + "O" + grid[row + monster_index][match_index + monster_char_index + 1 :]
     roughness = sum([row.count("#") for row in grid])
 
-    return seaMonsterCount != 0, roughness
+    return sea_monster_count != 0, roughness
 
-def printGrid(grid):
+def print_grid(grid):
     colorama.init()
     for row in grid:
         for char in row:
@@ -163,4 +163,4 @@ def printGrid(grid):
             print(char + colorama.Style.RESET_ALL, end='')
         print()
 
-aoc.runRaw(main, "day20.txt")
+aoc.run_raw(main, "day20.txt")
