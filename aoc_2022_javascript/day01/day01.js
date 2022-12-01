@@ -14,21 +14,21 @@ function main() {
 }
 
 function solve(lines) {
-  let elves = []
-  let current = 0
+  let elves = [];
+  let current = 0;
   for (let i = 0; i < lines.length; i++) {
     if (lines[i].trim() != "") {
       current += parseInt(lines[i]);
     } else {
-      elves.push(current)
+      elves.push(current);
       current = 0;
     }
   }
-  elves.push(current)
-  elves.sort(function(a, b) { return a - b; }).reverse()
+  elves.push(current);
+  elves.sort(function(a, b) { return a - b; }).reverse();
   
-  part1 = Math.max(...elves)
-  part2 = elves[0] + elves[1] + elves[2]
+  part1 = Math.max(...elves);
+  part2 = elves[0] + elves[1] + elves[2];
 
   return [part1, part2];
 }
