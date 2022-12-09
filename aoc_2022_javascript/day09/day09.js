@@ -21,21 +21,16 @@ function main() {
 }
 
 function solve(lines) {
-  let part1 = slither(lines, 2);
-  let part2 = slither(lines, 10);
-  
-  return [part1, part2];
-}
-
-function slither(lines, length) {
+  let length = 10;
   let snek = [];
   for (let i = 0; i < length; i++) {
     snek.push([0, 0]);
   }
-  let tailVisited = new Set();
-  tailVisited.add(0 + "," + 0);
-  for (line of lines) {
-    [direction, steps] = line.split(" ");
+  let visited1 = new Set(["0,0"]);
+  let visited2 = new Set(["0,0"]);
+
+  for (let line of lines) {
+    let [direction, steps] = line.split(" ");
     steps = parseInt(steps);
     for (let s = 0; s < steps; s++) {
       snek[0][0] += directions[direction][0];
@@ -52,8 +47,9 @@ function slither(lines, length) {
           }
         }
       }
-      tailVisited.add(snek[length - 1][0] + "," + snek[length - 1][1]);
+      visited1.add(snek[1][0] + "," + snek[1][1]);
+      visited2.add(snek[length - 1][0] + "," + snek[length - 1][1]);
     }
   }
-  return tailVisited.size;
+  return [visited1.size, visited2.size];
 }
