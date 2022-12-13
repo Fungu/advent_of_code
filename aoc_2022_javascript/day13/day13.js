@@ -18,20 +18,19 @@ function main() {
 
 function solve(lines) {
   let part1 = 0;
-  let packets = [];
-  for (let i = 0; i < lines.length; i+=3) {
-    packets.push(JSON.parse(lines[i]));
-    packets.push(JSON.parse(lines[i + 1]));
-    let result = compare(JSON.parse(lines[i]), JSON.parse(lines[i + 1]));
-    if (result == 1) {
+  let packets = [[[2]], [[6]]];
+  for (let i = 0; i < lines.length; i += 3) {
+    let a = JSON.parse(lines[i]);
+    let b = JSON.parse(lines[i + 1]);
+    packets.push(a);
+    packets.push(b);
+    if (compare(a, b) == 1) {
       part1 += (i / 3) + 1;
     }
   }
-  packets.push([[2]]);
-  packets.push([[6]]);
   packets.sort(function(a, b) { return compare(a, b); }).reverse();
-  let part2 = (1 + packets.findIndex(x => x.toString() == [[2]].toString())) * 
-              (1 + packets.findIndex(x => x.toString() == [[6]].toString()));
+  let part2 = (1 + packets.findIndex(x => arrayEqual(x, [[2]]))) * 
+              (1 + packets.findIndex(x => arrayEqual(x, [[6]])));
   return [part1, part2];
 }
 
@@ -50,9 +49,6 @@ function compare(a, b) {
       return -1;
     }
     // Otherwise, the inputs are the same integer; continue checking the next part of the input.
-    else {
-      return 0;
-    }
   }
   // If both values are lists, 
   else if (ta == object && tb == object) {
@@ -76,7 +72,7 @@ function compare(a, b) {
         }
       }
     }
-  } 
+  }
   // If exactly one value is an integer,
   else {
     // convert the integer to a list which contains that integer as its only value, then retry the comparison. 
@@ -91,4 +87,23 @@ function compare(a, b) {
     }
   }
   return 0;
+}
+
+function arrayEqual(a, b) {
+  if (typeof a != typeof b) {
+    return false;
+  }
+  if (typeof a == number) {
+    return a == b;
+  } else {
+    if (a.length != b.length) {
+      return false;
+    }
+    for (let i = 0; i < a.length; i++) {
+      if (!arrayEqual(a[i], b[i])) {
+        return false;
+      }
+    }
+    return true;
+  }
 }
