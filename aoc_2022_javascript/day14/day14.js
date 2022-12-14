@@ -10,8 +10,8 @@ function main() {
   solution = solve(lines);
   let end = Date.now();
   console.log(`Execution time: ${end - start} ms`);
-  console.log(`Part 1: ${solution[0]}`);  // 873
-  console.log(`Part 2: ${solution[1]}`);  // 24813
+  console.log(`Part 1: ${solution[0]}`);
+  console.log(`Part 2: ${solution[1]}`);
 }
 
 function solve(lines) {
