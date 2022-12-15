@@ -62,31 +62,46 @@ function solve(lines) {
   return [part1, part2];
 }
 
-function mergeRanges(rangeList, range) {
-  let overlap = false;
+function mergeRanges(rangeList, input) {
+  let modifiedIndex = -1;
   for (let i = 0; i < rangeList.length; i++) {
     let section = rangeList[i];
-    if (range[0] >= section[0] && range[1] <= section[1]) {
+    if (section[0] <= input[0] && input[1] <= section[1]) {
+      // Input is within another range
       return;
-    } else if (range[0] <= section[0] && range[1] >= section[1]) {
-      rangeList.splice(i, 1);
-      mergeRanges(rangeList, range);
-      return;
-    } else if (range[0] >= section[0] && range[0] <= section[1]) {
-      section[1] = range[1];
-      rangeList.splice(i, 1);
-      overlap = true;
-      mergeRanges(rangeList, section);
-      return;
-    } else if (range[1] >= section[0] && range[1] <= section[1]) {
-      section[0] = range[0];
-      rangeList.splice(i, 1);
-      overlap = true;
-      mergeRanges(rangeList, section);
-      return;
+    } else if (input[0] <= section[0] && section[1] <= input[1]) {
+      // Another range is within input.
+      if (modifiedIndex >= 0) {
+        rangeList.splice(i, 1);
+        i--;
+      } else {
+        section[0] = input[0];
+        section[1] = input[1];
+        modifiedIndex = i;
+      }
+    } else if (input[0] >= section[0] && input[0] <= section[1]) {
+      if (modifiedIndex >= 0) {
+        rangeList[modifiedIndex][0] = section[0];
+        rangeList.splice(i, 1);
+        i--;
+      } else {
+        section[1] = input[1];
+        input = section;
+        modifiedIndex = i;
+      }
+    } else if (input[1] >= section[0] && input[1] <= section[1]) {
+      if (modifiedIndex >= 0) {
+        rangeList[modifiedIndex][1] = section[1];
+        rangeList.splice(i, 1);
+        i--;
+      } else {
+        section[0] = input[0];
+        input = section;
+        modifiedIndex = i;
+      }
     }
   }
-  if (!overlap) {
-    rangeList.push(range);
+  if (modifiedIndex == -1) {
+    rangeList.push(input);
   }
 }
