@@ -3,7 +3,7 @@ main();
 function main() {
   const fs = require("fs");
   const lines = fs
-    .readFileSync("input.txt", { encoding: "utf-8" })
+    .readFileSync("input/day04.txt", { encoding: "utf-8" })
     .trim()
     .split("\n")
     .map(line => line.trim());
