@@ -3,7 +3,7 @@ main();
 function main() {
   const fs = require("fs");
   const lines = fs
-    .readFileSync("input.txt", { encoding: "utf-8" })
+    .readFileSync("input/day01.txt", { encoding: "utf-8" })
     .split("\n");
   let start = Date.now();
   solution = solve(lines);

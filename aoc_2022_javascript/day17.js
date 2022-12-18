@@ -11,7 +11,7 @@ main();
 function main() {
   const fs = require("fs");
   const input = fs
-    .readFileSync("input.txt", { encoding: "utf-8" })
+    .readFileSync("input/day17.txt", { encoding: "utf-8" })
     .trim()
     .split("");
   let start = Date.now();
