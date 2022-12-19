@@ -26,7 +26,8 @@ function solve(lines) {
     let blueprint = {
       name: name,
       robots: [],
-      mostNeeded: new Map()
+      mostNeeded: new Map(),
+      materialWorths: new Map(),
     };
     blueprint.robots.push({
       produces: "ore",
@@ -47,6 +48,10 @@ function solve(lines) {
     blueprint.mostNeeded.set("ore", blueprint.robots.reduce((partialMax, robot) => Math.max(partialMax, getOrDefault(robot.cost, "ore", 0)), 0));
     blueprint.mostNeeded.set("clay", blueprint.robots.reduce((partialMax, robot) => Math.max(partialMax, getOrDefault(robot.cost, "clay", 0)), 0));
     blueprint.mostNeeded.set("obsidian", blueprint.robots.reduce((partialMax, robot) => Math.max(partialMax, getOrDefault(robot.cost, "obsidian", 0)), 0));
+    blueprint.materialWorths.set("ore",  blueprint.robots[0].cost.get("ore"));
+    blueprint.materialWorths.set("clay",  blueprint.robots[1].cost.get("ore"));
+    blueprint.materialWorths.set("obsidian",  blueprint.robots[2].cost.get("ore") + blueprint.robots[2].cost.get("clay") * blueprint.clayWorth);
+    blueprint.materialWorths.set("geode",  blueprint.robots[3].cost.get("ore") + blueprint.robots[3].cost.get("obsidian") * blueprint.obsidianWorth);
     blueprints.push(blueprint);
   }
   let part1 = 0;
@@ -57,7 +62,7 @@ function solve(lines) {
       robots: new Map([["ore", 1]]),
       materials: new Map(),
       timeLeft: 24
-    }, blueprints[i], new Map());
+    }, blueprints[i], new Map(), new Map());
     part1 += result * (i + 1);
   }
   
@@ -66,18 +71,35 @@ function solve(lines) {
       robots: new Map([["ore", 1]]),
       materials: new Map(),
       timeLeft: 32
-    }, blueprints[i], new Map());
+    }, blueprints[i], new Map(), new Map());
     part2 *= result;
   }
 
   return [part1, part2];
 }
 
-function simulate(state, blueprint, dp) {
+function simulate(state, blueprint, dp, bestScoreMap) {
   let currentStateString = state.timeLeft + " " + Array.from(state.robots.values()).join(",") + " " + Array.from(state.materials.values()).join(",");
   if (dp.has(currentStateString)) {
     return dp.get(currentStateString);
   }
+  let currentScore = 0;
+  for (let [material, amount] of state.robots) {
+    currentScore += amount * blueprint.materialWorths.get(material) * state.timeLeft;
+  }
+  for (let [material, amount] of state.materials) {
+    currentScore += amount * blueprint.materialWorths.get(material);
+  }
+  let bestScore = getOrDefault(bestScoreMap, state.timeLeft, 0);
+  if (bestScore > currentScore) {
+    bestScoreMap.set(state.timeLeft, currentScore);
+    if (state.robots.has("geode")) {
+      return 0;
+    }
+  } else {
+    bestScoreMap.set(state.timeLeft, currentScore);
+  }
+
   if (state.timeLeft == 0) {
     return getOrDefault(state.materials, "geode", 0);
   }
@@ -110,7 +132,7 @@ function simulate(state, blueprint, dp) {
         // Finish building
         if (isBuilding) {
           increase(newState.robots, robot.produces, 1);
-          ret = Math.max(ret, simulate(newState, blueprint, dp));
+          ret = Math.max(ret, simulate(newState, blueprint, dp, bestScoreMap));
         }
 
         if (newState.timeLeft == 0) {
