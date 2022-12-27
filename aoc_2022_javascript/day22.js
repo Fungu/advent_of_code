@@ -1,5 +1,3 @@
-const { posix } = require("path");
-
 class Face {
   constructor(pos, grid) {
     this.pos = pos;
