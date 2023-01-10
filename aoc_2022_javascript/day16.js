@@ -55,8 +55,6 @@ function solve(lines) {
   }
   let part1 = search({
     pos: "AA",
-    dest: "AA",
-    travelTime: 0,
     timeLeft: 30,
     openValves: ["AA"],
   }, valvesWithFlow);
@@ -79,21 +77,17 @@ function searchPart2() {
     dp = new Map();
     let subRet = search({
       pos: "AA",
-      dest: "AA",
-      travelTime: 0,
       timeLeft: 26,
       openValves: [],
     }, v1);
     dp = new Map();
     subRet += search({
       pos: "AA",
-      dest: "AA",
-      travelTime: 0,
       timeLeft: 26,
       openValves: [],
     }, v2);
     ret = Math.max(ret, subRet);
-    console.log(i + "/" + nrOfStates + ": " + v1 + " - " + v2 + " - " + ret + " (" + subRet + ")");
+    // console.log(i + "/" + nrOfStates + ": " + v1 + " - " + v2 + " - " + ret + " (" + subRet + ")");
   }
   return ret;
 }
@@ -104,43 +98,37 @@ function search(state, valves) {
     return dp.get(currentStateString);
   }
   
-  let flow = getFlow(state);
+  let startFlow = getFlow(state);
   if (state.timeLeft == 0) {
-    return flow;
+    return startFlow;
   }
-  state.timeLeft -= 1;
-
+  if (allValves.get(state.pos).flow > 0) {
+    state.openValves.push(state.pos);
+    state.openValves.sort();
+    state.timeLeft--;
+  }
+  if (state.openValves.length == valves.length) {
+    return startFlow + getFlow(state) * (state.timeLeft - 0);
+  }
+  let flow = getFlow(state);
   let ret = 0;
-  if (state.travelTime == 0) {
-    state.pos = state.dest;
-    if (allValves.get(state.pos).flow > 0 && !state.openValves.includes(state.pos)) {
-      state.openValves.push(state.pos);
-      state.openValves.sort();
-    }
-    if (state.openValves.length == valves.length) {
-      ret = Math.max(ret, search(state, valves));
-    } else {
-      for (let dest of valves) {
-        if (dest != state.pos && !state.openValves.includes(dest)) {
-          let nextState = {
-            pos: state.pos,
-            dest: dest,
-            travelTime: travelTimes.get([state.pos, dest].sort().join("-")),
-            timeLeft: state.timeLeft,
-            openValves: [...state.openValves]
-          };
-          ret = Math.max(ret, search(nextState, valves));
-        }
+  for (let dest of valves) {
+    if (dest != state.pos && !state.openValves.includes(dest)) {
+      let travelTime = travelTimes.get([state.pos, dest].sort().join("-"));
+      if (travelTime >= state.timeLeft) {
+        ret = Math.max(ret, flow * (state.timeLeft + 0));
+      } else {
+        let nextState = {
+          pos: dest,
+          timeLeft: state.timeLeft - travelTime,
+          openValves: [...state.openValves]
+        };
+        ret = Math.max(ret, flow * (travelTime + 0) + search(nextState, valves));
       }
     }
-  } else {
-    state.travelTime--;
-    ret = Math.max(ret, search(state, valves));
   }
-  ret += flow;
-  if (state.travelTime == 0) {
-    dp.set(currentStateString, ret);
-  }
+  ret += startFlow;
+  dp.set(currentStateString, ret);
   return ret;
 }
 
