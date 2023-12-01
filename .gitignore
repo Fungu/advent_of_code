@@ -5,3 +5,6 @@ bin
 *.exe
 target
 Cargo.lock
+﻿**/bin
+**/obj
+**/.vs
