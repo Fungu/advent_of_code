@@ -33,8 +33,6 @@ public static class Day08
                 current = nodes[current].Item2;
         }
 
-        List<long> loopStart = [];
-        List<long> loopLength = [];
         List<long> targetPos = [];
         for (int a = 0; a < startGhost.Count; a++)
         {
@@ -47,11 +45,6 @@ public static class Day08
                 if (ghost.EndsWith('Z'))
                 {
                     targetPos.Add(counter);
-                }
-                if (seen.Contains(ghost + i))
-                {
-                    loopStart.Add(seen.IndexOf(ghost + i));
-                    loopLength.Add(counter - seen.IndexOf(ghost + i));
                     break;
                 }
                 seen.Add(ghost + i);
@@ -64,17 +57,13 @@ public static class Day08
             }
         }
 
-        long gcd = loopLength[0];
-        for (int i = 1; i < loopLength.Count; i++)
-        {
-            gcd = GCD(gcd, loopLength[i]);
-            if (loopLength[i] != targetPos[i])
-                throw new Exception("I assume that the target is at the end of the loops.");
-        }
+        long gcd = targetPos[0];
+        for (int i = 1; i < targetPos.Count; i++)
+            gcd = GCD(gcd, targetPos[i]);
 
         long part2 = 1;
-        for (int i = 0; i < loopLength.Count; i++)
-            part2 *= loopLength[i] / gcd;
+        for (int i = 0; i < targetPos.Count; i++)
+            part2 *= targetPos[i] / gcd;
         part2 *= gcd;
 
         stopwatch.Stop();
