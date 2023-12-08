@@ -36,7 +36,6 @@ public static class Day08
         List<long> targetPos = [];
         for (int a = 0; a < startGhost.Count; a++)
         {
-            List<string> seen = [];
             string ghost = startGhost[a];
             int counter = 0;
             for (int i = 0; ; i++)
@@ -47,8 +46,6 @@ public static class Day08
                     targetPos.Add(counter);
                     break;
                 }
-                seen.Add(ghost + i);
-
                 counter++;
                 if (sequence[i] == 'L')
                     ghost = nodes[ghost].Item1;
