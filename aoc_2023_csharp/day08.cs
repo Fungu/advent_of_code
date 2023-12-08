@@ -38,20 +38,16 @@ public static class Day08
         {
             string ghost = startGhost[a];
             int counter = 0;
-            for (int i = 0; ; i++)
+            for (int i = 0; !ghost.EndsWith('Z'); i++)
             {
                 if (i >= sequence.Length) i = 0;
-                if (ghost.EndsWith('Z'))
-                {
-                    targetPos.Add(counter);
-                    break;
-                }
                 counter++;
                 if (sequence[i] == 'L')
                     ghost = nodes[ghost].Item1;
                 else
                     ghost = nodes[ghost].Item2;
             }
+            targetPos.Add(counter);
         }
 
         long gcd = targetPos[0];
