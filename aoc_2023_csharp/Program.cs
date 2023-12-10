@@ -8,4 +8,5 @@
 // Day06.Solve();
 // Day07.Solve();
 // Day08.Solve();
-Day09.Solve();
+// Day09.Solve();
+Day10.Solve();
