@@ -18,12 +18,12 @@ public static class Day12
             string groups = a[1];
 
             var groupArray = groups.Split(',').Select(int.Parse).ToArray();
-            part1 += CountValid(map, groupArray, 0, 0, []);
+            part1 += CountValid([], map, groupArray, 0, 0);
 
             string repeatedMap = string.Join('?', Enumerable.Repeat(map, 5));
             string repeatedGroups = string.Join(',', Enumerable.Repeat(groups, 5));
             var repeatedGroupArray = repeatedGroups.Split(',').Select(int.Parse).ToArray();
-            part2 += CountValid(repeatedMap, repeatedGroupArray, 0, 0, []);
+            part2 += CountValid([], repeatedMap, repeatedGroupArray, 0, 0);
         }
 
         stopwatch.Stop();
@@ -32,7 +32,7 @@ public static class Day12
         Console.WriteLine($"Part 2: {part2}");
     }
 
-    private static long CountValid(string map, int[] groupSizes, int mapIndex, int groupIndex, Dictionary<object, long> dp)
+    private static long CountValid(Dictionary<object, long> dp, string map, int[] groupSizes, int mapIndex, int groupIndex)
     {
         bool groupsDone = groupIndex == groupSizes.Length;
         bool mapDone = mapIndex == map.Length || map.LastIndexOf('#') < mapIndex;
@@ -41,7 +41,7 @@ public static class Day12
             if (mapDone) return 1;
             else return 0;
         }
-        object key = (map, groupSizes, mapIndex, groupIndex);
+        object key = (mapIndex, groupIndex);
         if (dp.TryGetValue(key, out long value)) return value;
 
         long ret = 0;
@@ -60,7 +60,7 @@ public static class Day12
                 if (groupEndIndex != map.Length && map[groupEndIndex] != '.' && map[groupEndIndex] != '?')
                     groupFits = false;
                 if (groupFits)
-                    ret += CountValid(map, groupSizes, groupEndIndex + 1, groupIndex + 1, dp);
+                    ret += CountValid(dp, map, groupSizes, groupEndIndex + 1, groupIndex + 1);
                 if (map[i] == '#')
                     break;
             }
