@@ -3,8 +3,8 @@ from typing import Callable
 
 def run_lines(main_function: Callable, day: str):
     with open("input/" + day) as file:
-        raw_input = file.readlines()
-    run(main_function, raw_input)
+        input = [line.strip() for line in file.readlines()]
+    run(main_function, input)
 
 def run_raw(main_function: Callable, day: str):
     with open("input/" + day) as file:
