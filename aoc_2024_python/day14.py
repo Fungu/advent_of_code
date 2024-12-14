@@ -31,27 +31,40 @@ def main(lines: list):
             quadrants[3] += 1
     part1 = reduce(mul, quadrants)
 
+    directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
     part2 = 0
     while True:
+        positions = set()
+        
+        # Step the robots
         for robot in robots:
             robot[0] = (robot[0] + robot[2]) % width
             robot[1] = (robot[1] + robot[3]) % height
+            positions.add((robot[0], robot[1]))
         part2 += 1
-        if part2 == 7847:
-        #if (part2 - 69) % 101 == 0:
-            for y in range(height):
-                for x in range(width):
-                    found_robot = False
-                    for robot in robots:
-                        if robot[0] == x and robot[1] == y:
-                            print('#', end='')
-                            found_robot = True
-                            break
-                    if not found_robot:
-                        print(" ", end='')
-                print()
-            #print(part2)
-            #input()
+        
+        # Find the average x-position among robots that has neighbors
+        x_sum = 0
+        x_num = 0
+        for robot in robots:
+            neighbors = False
+            for dir in directions:
+                if (robot[0] + dir[0], robot[1] + dir[1]) in positions:
+                    neighbors = True
+                    break
+            if neighbors:
+                x_sum += robot[0]
+                x_num += 1
+        if x_num == 0:
+            continue
+        x_avg = x_sum / x_num
+
+        # Check if at least half the robots have a mirrored robot
+        mirrored_robots = 0
+        for robot in robots:
+            if (2 * int(x_avg) - robot[0], robot[1]) in positions:
+                mirrored_robots += 1
+        if mirrored_robots / len(robots) >= 0.5:
             break
         
     return part1, part2
