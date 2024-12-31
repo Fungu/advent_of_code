@@ -1,9 +1,6 @@
 from dataclasses import dataclass
 import aoc
-import copy
 import re
-
-
 
 @dataclass
 class Gate:
