@@ -1,5 +1,6 @@
-﻿using aoc_2023_csharp;
+﻿using aoc_2025_csharp;
 
 // Day01.Solve();
 // Day02.Solve();
-Day03.Solve();
+// Day03.Solve();
+Day04.Solve();
