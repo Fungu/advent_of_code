@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace aoc_2023_csharp;
+namespace aoc_2025_csharp;
 
 public static class Day03
 {
